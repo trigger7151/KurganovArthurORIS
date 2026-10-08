@@ -1,0 +1,15 @@
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net9.0\CustomHttpServer.exe
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net9.0\static\index.html
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net9.0\CustomHttpServer.deps.json
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net9.0\CustomHttpServer.runtimeconfig.json
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net9.0\CustomHttpServer.dll
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net9.0\CustomHttpServer.pdb
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net9.0\CustomHttpServer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net9.0\CustomHttpServer.AssemblyInfoInputs.cache
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net9.0\CustomHttpServer.AssemblyInfo.cs
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net9.0\CustomHttpServer.csproj.CoreCompileInputs.cache
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net9.0\CustomHttpServer.dll
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net9.0\refint\CustomHttpServer.dll
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net9.0\CustomHttpServer.pdb
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net9.0\CustomHttpServer.genruntimeconfig.cache
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net9.0\ref\CustomHttpServer.dll

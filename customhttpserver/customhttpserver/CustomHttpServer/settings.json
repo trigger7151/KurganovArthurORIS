@@ -1,0 +1,4 @@
+﻿{
+  "Prefixes": [ "http://localhost:2323/" ],
+  "StaticPath": "static/"
+}

@@ -1,0 +1,45 @@
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net10.0\CustomHttpServer.exe
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\index.html
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net10.0\CustomHttpServer.deps.json
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net10.0\CustomHttpServer.runtimeconfig.json
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net10.0\CustomHttpServer.dll
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net10.0\CustomHttpServer.pdb
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.AssemblyInfoInputs.cache
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.AssemblyInfo.cs
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.csproj.CoreCompileInputs.cache
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.dll
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net10.0\refint\CustomHttpServer.dll
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.pdb
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.genruntimeconfig.cache
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net10.0\ref\CustomHttpServer.dll
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net10.0\settings.json
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHt.FC668D6A.Up2Date
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\forget.html
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\image\bg.jpg
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\image\logo.png
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\login.html
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\register.html
+C:\Users\timer\OneDrive\Рабочий стол\DELETE!!!\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\style.css
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\bin\Debug\net10.0\CustomHttpServer.exe
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\bin\Debug\net10.0\settings.json
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\forget.html
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\image\bg.jpg
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\image\logo.png
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\index.html
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\login.html
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\register.html
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\bin\Debug\net10.0\static\style.css
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\bin\Debug\net10.0\CustomHttpServer.deps.json
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\bin\Debug\net10.0\CustomHttpServer.runtimeconfig.json
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\bin\Debug\net10.0\CustomHttpServer.dll
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\bin\Debug\net10.0\CustomHttpServer.pdb
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.AssemblyInfoInputs.cache
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.AssemblyInfo.cs
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.csproj.CoreCompileInputs.cache
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.dll
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\obj\Debug\net10.0\refint\CustomHttpServer.dll
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.pdb
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\obj\Debug\net10.0\CustomHttpServer.genruntimeconfig.cache
+C:\Users\user\Documents\MEGA\2 курс\Орис\1 сем\дз (последняя версия)\KurganovArthurORIS\customhttpserver\customhttpserver\CustomHttpServer\obj\Debug\net10.0\ref\CustomHttpServer.dll
