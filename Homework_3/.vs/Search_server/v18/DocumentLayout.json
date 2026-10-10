@@ -1,0 +1,124 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{493C0386-CE53-4AFF-9602-729145E33B43}|Search_server\\Search_server.csproj|d:\\\u043A\u0444\u0443\\2 \u043A\u0443\u0440\u0441\\\u043E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\kurganovarthuroris\\homework_3\\search_server\\framework\\handlerabstraction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{493C0386-CE53-4AFF-9602-729145E33B43}|Search_server\\Search_server.csproj|solutionrelative:search_server\\framework\\handlerabstraction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{493C0386-CE53-4AFF-9602-729145E33B43}|Search_server\\Search_server.csproj|d:\\\u043A\u0444\u0443\\2 \u043A\u0443\u0440\u0441\\\u043E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\kurganovarthuroris\\homework_3\\search_server\\framework\\concretehandlers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{493C0386-CE53-4AFF-9602-729145E33B43}|Search_server\\Search_server.csproj|solutionrelative:search_server\\framework\\concretehandlers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{493C0386-CE53-4AFF-9602-729145E33B43}|Search_server\\Search_server.csproj|d:\\\u043A\u0444\u0443\\2 \u043A\u0443\u0440\u0441\\\u043E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\kurganovarthuroris\\homework_3\\search_server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{493C0386-CE53-4AFF-9602-729145E33B43}|Search_server\\Search_server.csproj|solutionrelative:search_server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{493C0386-CE53-4AFF-9602-729145E33B43}|Search_server\\Search_server.csproj|d:\\\u043A\u0444\u0443\\2 \u043A\u0443\u0440\u0441\\\u043E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\kurganovarthuroris\\homework_3\\search_server\\search_server.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{493C0386-CE53-4AFF-9602-729145E33B43}|Search_server\\Search_server.csproj|solutionrelative:search_server\\search_server.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{493C0386-CE53-4AFF-9602-729145E33B43}|Search_server\\Search_server.csproj|d:\\\u043A\u0444\u0443\\2 \u043A\u0443\u0440\u0441\\\u043E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\kurganovarthuroris\\homework_3\\search_server\\forget.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{493C0386-CE53-4AFF-9602-729145E33B43}|Search_server\\Search_server.csproj|solutionrelative:search_server\\forget.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{493C0386-CE53-4AFF-9602-729145E33B43}|Search_server\\Search_server.csproj|d:\\\u043A\u0444\u0443\\2 \u043A\u0443\u0440\u0441\\\u043E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\kurganovarthuroris\\homework_3\\search_server\\index \u2014 \u043A\u043E\u043F\u0438\u044F.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{493C0386-CE53-4AFF-9602-729145E33B43}|Search_server\\Search_server.csproj|solutionrelative:search_server\\index \u2014 \u043A\u043E\u043F\u0438\u044F.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ConcreteHandlers.cs",
+              "DocumentMoniker": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Framework\\ConcreteHandlers.cs",
+              "RelativeDocumentMoniker": "Search_server\\Framework\\ConcreteHandlers.cs",
+              "ToolTip": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Framework\\ConcreteHandlers.cs*",
+              "RelativeToolTip": "Search_server\\Framework\\ConcreteHandlers.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-09T20:47:22.955Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "HandlerAbstraction.cs",
+              "DocumentMoniker": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Framework\\HandlerAbstraction.cs",
+              "RelativeDocumentMoniker": "Search_server\\Framework\\HandlerAbstraction.cs",
+              "ToolTip": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Framework\\HandlerAbstraction.cs",
+              "RelativeToolTip": "Search_server\\Framework\\HandlerAbstraction.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-09T20:45:33.691Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "index \u2014 \u043A\u043E\u043F\u0438\u044F.html",
+              "DocumentMoniker": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\index \u2014 \u043A\u043E\u043F\u0438\u044F.html",
+              "RelativeDocumentMoniker": "Search_server\\index \u2014 \u043A\u043E\u043F\u0438\u044F.html",
+              "ToolTip": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\index \u2014 \u043A\u043E\u043F\u0438\u044F.html",
+              "RelativeToolTip": "Search_server\\index \u2014 \u043A\u043E\u043F\u0438\u044F.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-10-09T20:34:36.994Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "forget.html",
+              "DocumentMoniker": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\forget.html",
+              "RelativeDocumentMoniker": "Search_server\\forget.html",
+              "ToolTip": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\forget.html",
+              "RelativeToolTip": "Search_server\\forget.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-10-09T20:33:37.539Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Search_server.csproj",
+              "DocumentMoniker": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Search_server.csproj",
+              "RelativeDocumentMoniker": "Search_server\\Search_server.csproj",
+              "ToolTip": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Search_server.csproj*",
+              "RelativeToolTip": "Search_server\\Search_server.csproj*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-10-09T20:32:14.61Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Program.cs",
+              "RelativeDocumentMoniker": "Search_server\\Program.cs",
+              "ToolTip": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Program.cs",
+              "RelativeToolTip": "Search_server\\Program.cs",
+              "ViewState": "AgIAAJgAAAAAAAAAAAAAwM4AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-09T20:24:25.125Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

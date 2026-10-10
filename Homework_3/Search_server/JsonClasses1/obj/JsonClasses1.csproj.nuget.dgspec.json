@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\http_server\\Search_server\\JsonClasses1\\JsonClasses1.csproj": {}
+    "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_3\\Search_server\\JsonClasses1\\JsonClasses1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\http_server\\Search_server\\JsonClasses1\\JsonClasses1.csproj": {
+    "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_3\\Search_server\\JsonClasses1\\JsonClasses1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\http_server\\Search_server\\JsonClasses1\\JsonClasses1.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_3\\Search_server\\JsonClasses1\\JsonClasses1.csproj",
         "projectName": "JsonClasses1",
-        "projectPath": "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\http_server\\Search_server\\JsonClasses1\\JsonClasses1.csproj",
+        "projectPath": "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_3\\Search_server\\JsonClasses1\\JsonClasses1.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\http_server\\Search_server\\JsonClasses1\\obj\\",
+        "outputPath": "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_3\\Search_server\\JsonClasses1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"

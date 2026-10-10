@@ -273,10 +273,6 @@ public static class MimeTypes
         return types[Path.GetExtension(absolutePath)];
     }
 }
-public static class RequestHandler
-{
-    public static 
-}
 class Program
 {
     static async Task Main(string[] args)

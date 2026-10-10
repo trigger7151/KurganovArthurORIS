@@ -12,8 +12,8 @@
     <None Update="index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="settings.json" CopyToOutputDirectory="PreserveNewest"/>
-    <None Update="static\**" CopyToOutputDirectory="PreserveNewest"/>
+    <None Update="settings.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="static\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,75 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Search_server\\Class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Search_server.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Search_server\\Search_server.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Search_server\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Class1.cs",
+              "DocumentMoniker": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Class1.cs",
+              "RelativeDocumentMoniker": "Search_server\\Class1.cs",
+              "ToolTip": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Class1.cs*",
+              "RelativeToolTip": "Search_server\\Class1.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-09T20:39:33.933Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Search_server.csproj",
+              "DocumentMoniker": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Search_server.csproj",
+              "RelativeDocumentMoniker": "Search_server\\Search_server.csproj",
+              "ToolTip": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Search_server.csproj",
+              "RelativeToolTip": "Search_server\\Search_server.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-10-09T20:39:12.81Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Program.cs",
+              "RelativeDocumentMoniker": "Search_server\\Program.cs",
+              "ToolTip": "D:\\\u041A\u0424\u0423\\2 \u043A\u0443\u0440\u0441\\\u041E\u0440\u0438\u0441\\1 \u0441\u0435\u043C\\\u0434\u0437 (\u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F \u0432\u0435\u0440\u0441\u0438\u044F)\\KurganovArthurORIS\\Homework_3\\Search_server\\Program.cs",
+              "RelativeToolTip": "Search_server\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAKUAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-09T18:32:38.91Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

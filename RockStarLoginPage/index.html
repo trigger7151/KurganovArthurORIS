@@ -31,7 +31,8 @@
                   <h1 class="sign-in-h">Sign in</h1>
                   <div>
                     <div>
-                      <form class="form">
+                      <!--Форма отправляет данные авторизации по /login методом post-->
+                      <form class="form" action="/login" method="post">
                         <!--email-->
                         <fieldset class="mg-b">
                           <span
@@ -41,6 +42,8 @@
                               class="email-password-input display-block wdth-full"
                               id="text-input-email"
                               placeholder=""
+                              name="username"
+                              required
                             />
                             <label
                               for="text-input-email"
@@ -62,6 +65,8 @@
                                 placeholder=""
                                 class="display-block email-password-input wdth-full"
                                 type="password"
+                                name="password"
+                                required
                               />
                               <label
                                 for="text-input-password"
