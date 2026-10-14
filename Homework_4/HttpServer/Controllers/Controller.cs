@@ -5,7 +5,7 @@ using System.Web;
 namespace HttpServer.Controllers;
 
 [Route("/login")]
-public class LoginController
+public class LoginController : ControllerBase
 {
     [Method("POST")]
     [Route("")]

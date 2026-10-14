@@ -6,6 +6,39 @@ using Search_server;
 using HttpServer.Controllers;
 namespace HttpServer.Handlers;
 
+public static class RouteTable
+{
+    public static Dictionary<(string Method, string Path), RouteProcessor> Routes { get; } = new();
+    public static void MapRoutes()
+    {
+        var controllers = Assembly.GetExecutingAssembly()
+        .GetTypes()
+        .Where(type => type.Namespace == "HttpServer.Controllers" 
+        && type.Name.EndsWith("Controller") 
+        && type.IsClass);
+
+        var routeAttributes = controllers
+        .Select(controller => controller.GetCustomAttributes<RouteAttribute>());
+        var paths = routeAttributes.SelectMany(attributes => attributes.Select(attribute => attribute)).Select(attribute => attribute.Path); 
+        
+
+        foreach (var controller in controllers)
+        {
+            var path = controller.GetCustomAttribute<RouteAttribute>().Path;
+            var processMethods = controller
+            .GetMethods()
+            .Where(method => method.Name.StartsWith("Process"));
+            foreach (var method in processMethods)
+            {
+                var httpMethod = method.GetCustomAttribute<MethodAttribute>().Method;
+                var methodPath = method.GetCustomAttribute<RouteAttribute>().Path;
+                var fullPath = "/" + $"{path.TrimEnd('/')}/{methodPath.TrimStart('/')}".Trim('/');
+                var instance = Activator.CreateInstance(controller);          
+                Routes[(fullPath, httpMethod)] = method.CreateDelegate<RouteProcessor>(instance);
+            }
+        }
+    }
+}
 public class StaticHandler: Handler
 {
     public override async Task HandleAsync(HttpListenerContext context, Server server, CancellationToken token)
@@ -58,46 +91,12 @@ public class StaticHandler: Handler
 
 public class RouteHandler: Handler
 {
-    Dictionary<(string Method, string Path), RouteProcessor> Routes { get; } = new();
-    public void MapRoutes()
-    {
-        var controllers = Assembly.GetExecutingAssembly()
-        .GetTypes()
-        .Where(type => type.Namespace == "HttpServer.Controllers" 
-        && type.Name.EndsWith("Controller") 
-        && type.IsClass);
-
-        var routeAttributes = controllers
-        .Select(controller => controller.GetCustomAttributes<RouteAttribute>());
-        var paths = routeAttributes.SelectMany(attributes => attributes.Select(attribute => attribute)).Select(attribute => attribute.Path); 
-        
-
-        foreach (var controller in controllers)
-        {
-            var path = controller.GetCustomAttribute<RouteAttribute>().Path;
-            var processMethods = controller
-            .GetMethods()
-            .Where(method => method.Name.StartsWith("Process"));
-            foreach (var method in processMethods)
-            {
-                var httpMethod = method.GetCustomAttribute<MethodAttribute>().Method;
-                var methodPath = method.GetCustomAttribute<RouteAttribute>().Path;
-                var fullPath = "/" + $"{path.TrimEnd('/')}/{methodPath.TrimStart('/')}".Trim('/');
-                var instance = Activator.CreateInstance(controller);          // для нестатических методов
-                Routes[(fullPath, httpMethod)] = method.CreateDelegate<RouteProcessor>(instance);
-            }
-        }
-    }
     public override async Task HandleAsync(HttpListenerContext context, Server server, CancellationToken token)
     {
-        if (Routes.Count == 0)
-        {
-            MapRoutes();
-        }
         var localUrl = context.Request.Url.AbsolutePath.Trim('/');
         localUrl = string.IsNullOrEmpty(localUrl) ? "/" : "/" + localUrl;
         Console.WriteLine($"Относительный url {localUrl}");
         
-        await Routes[(localUrl, context.Request.HttpMethod)](context, server, token);
+        await RouteTable.Routes[(localUrl, context.Request.HttpMethod)](context, server, token);
     }
 }

@@ -5,7 +5,42 @@ using JsonClasses;
 using HttpServer.Settings;
 using MimeTypesSpace;
 using HttpServer.Handlers;
+using System.Runtime.CompilerServices;
 
+public static class ServerService
+{
+    private static Server? Server{get;set;}
+    private static bool IsStarted{get;set;}
+    private static bool ListenConsole{get;set;}
+    public static async Task StartServer(bool listenConsole)
+    {
+        if (IsStarted)
+        {
+            throw new Exception("Server already started");
+        }
+        Build(listenConsole);
+        Server.Start();
+        IsStarted = true;
+        if (ListenConsole)
+        {
+            var listener = new ConsoleListener(Server);
+            await listener.ListenConsoleLoopAsync();
+        }
+    }
+    private static void Build(bool listenConsole)
+    {
+        ListenConsole = true;
+        var pipeline = GetPipeline();
+        RouteTable.MapRoutes();
+        Server = new Server(ServerSettings.Instance, pipeline);
+    }
+    private static IHandler GetPipeline()
+    {
+        var pipeline = new StaticHandler();
+        pipeline.SetNext(new RouteHandler());
+        return pipeline;
+    }
+}
 public class ConsoleListener
 {
     private Server? Server{get;}
@@ -68,19 +103,14 @@ public class Server
     private Task? ListenTask { get; set; }
     private string[] Prefixes { get; }
     public string ResponsePath { get; }
-    public RouteHandler RouteHandler{get;}
-    private StaticHandler StaticHandler{get;set;}
+    private IHandler Pipeline{get;}
 
     public bool IsRunning => ListenTask is { IsCompleted: false };
-
-    public Server(ServerSettings settings)
+    public Server(ServerSettings settings, IHandler pipeline)
     {
         Prefixes = settings.Prefixes;
         ResponsePath = settings.ResponsePath;
-        StaticHandler = new StaticHandler();
-        RouteHandler = new RouteHandler();
-        StaticHandler.SetNext(RouteHandler);
-        RouteHandler.MapRoutes();
+        Pipeline = pipeline;
     }
     public void Start()
     {
@@ -173,7 +203,7 @@ public class Server
     {
         try
         {
-            await StaticHandler.HandleAsync(context, this, token);
+            await Pipeline.HandleAsync(context, this, token);
         }
         finally
         {
@@ -187,9 +217,6 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        var server = new Server(ServerSettings.Instance);
-        var consoleListener = new ConsoleListener(server);
-        server.Start();
-        await consoleListener.ListenConsoleLoopAsync();
+        await ServerService.StartServer(true);
     }
 }
