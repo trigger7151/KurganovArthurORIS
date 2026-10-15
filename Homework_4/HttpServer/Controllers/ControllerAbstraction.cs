@@ -27,8 +27,9 @@ public delegate Task RouteProcessor(HttpListenerContext context, Server server, 
 
 public abstract class ControllerBase
 {
-    public HttpListenerContext? Context {get;}
-
+    public HttpListenerContext? Context {get;set;}
+    public Server Server {get;set;}
+    public CancellationToken token{get;set;}
     public ControllerBase()
     {
         

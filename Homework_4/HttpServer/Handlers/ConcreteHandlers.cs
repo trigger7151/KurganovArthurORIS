@@ -6,21 +6,37 @@ using Search_server;
 using HttpServer.Controllers;
 namespace HttpServer.Handlers;
 
+public enum Methods
+{
+    GET,
+    POST,
+    PUT,
+    DELETE
+}
+
+public class RouteEntry
+{
+    public Type ControllerType{get;private set;}
+    public MethodInfo Method{get; private set;}
+    public RouteEntry(Type controllerType, MethodInfo method)
+    {
+        ControllerType = controllerType;
+        Method = method;
+    }
+}
+
 public static class RouteTable
 {
-    public static Dictionary<(string Method, string Path), RouteProcessor> Routes { get; } = new();
+    public static Dictionary<(string Method, string Path), RouteEntry> Routes {get;} = new();
+    // вызывается один раз в Search_server.ServerService.Build()
     public static void MapRoutes()
     {
+        // получаем все типы контроллеров
         var controllers = Assembly.GetExecutingAssembly()
         .GetTypes()
         .Where(type => type.Namespace == "HttpServer.Controllers" 
         && type.Name.EndsWith("Controller") 
         && type.IsClass);
-
-        var routeAttributes = controllers
-        .Select(controller => controller.GetCustomAttributes<RouteAttribute>());
-        var paths = routeAttributes.SelectMany(attributes => attributes.Select(attribute => attribute)).Select(attribute => attribute.Path); 
-        
 
         foreach (var controller in controllers)
         {
@@ -33,8 +49,8 @@ public static class RouteTable
                 var httpMethod = method.GetCustomAttribute<MethodAttribute>().Method;
                 var methodPath = method.GetCustomAttribute<RouteAttribute>().Path;
                 var fullPath = "/" + $"{path.TrimEnd('/')}/{methodPath.TrimStart('/')}".Trim('/');
-                var instance = Activator.CreateInstance(controller);          
-                Routes[(fullPath, httpMethod)] = method.CreateDelegate<RouteProcessor>(instance);
+                var routeEntry = new RouteEntry(controller, method);
+                Routes[(httpMethod, fullPath)] = routeEntry;
             }
         }
     }
@@ -97,6 +113,11 @@ public class RouteHandler: Handler
         localUrl = string.IsNullOrEmpty(localUrl) ? "/" : "/" + localUrl;
         Console.WriteLine($"Относительный url {localUrl}");
         
-        await RouteTable.Routes[(localUrl, context.Request.HttpMethod)](context, server, token);
+        var routeEntry = RouteTable.Routes[(context.Request.HttpMethod, localUrl)];
+        var controller = (ControllerBase)Activator.CreateInstance(routeEntry.ControllerType);
+        await (Task)routeEntry.Method.Invoke(controller, new object[] { context, server, token });
+        // await RouteTable.Routes[(localUrl, context.Request.HttpMethod)](context, server, token);
     }
 }
+
+
