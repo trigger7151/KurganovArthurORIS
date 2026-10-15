@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_4\\HttpServer\\HttpServer.csproj": {}
+    "D:\\КФУ\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_4\\HttpServer\\HttpServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_4\\HttpServer\\HttpServer.csproj": {
+    "D:\\КФУ\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_4\\HttpServer\\HttpServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_4\\HttpServer\\HttpServer.csproj",
+        "projectUniqueName": "D:\\КФУ\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_4\\HttpServer\\HttpServer.csproj",
         "projectName": "HttpServer",
-        "projectPath": "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_4\\HttpServer\\HttpServer.csproj",
+        "projectPath": "D:\\КФУ\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_4\\HttpServer\\HttpServer.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\Documents\\MEGA\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_4\\HttpServer\\obj\\",
+        "outputPath": "D:\\КФУ\\2 курс\\Орис\\1 сем\\дз (последняя версия)\\KurganovArthurORIS\\Homework_4\\HttpServer\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

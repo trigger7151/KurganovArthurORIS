@@ -23,13 +23,11 @@ public class MethodAttribute: Attribute
     
 }
 
-public delegate Task RouteProcessor(HttpListenerContext context, Server server, CancellationToken token);
-
 public abstract class ControllerBase
 {
     public HttpListenerContext? Context {get;set;}
     public Server Server {get;set;}
-    public CancellationToken token{get;set;}
+    public CancellationToken Token{get;set;}
     public ControllerBase()
     {
         

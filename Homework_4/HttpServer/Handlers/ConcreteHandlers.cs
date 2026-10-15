@@ -6,13 +6,7 @@ using Search_server;
 using HttpServer.Controllers;
 namespace HttpServer.Handlers;
 
-public enum Methods
-{
-    GET,
-    POST,
-    PUT,
-    DELETE
-}
+
 
 public class RouteEntry
 {
@@ -115,8 +109,10 @@ public class RouteHandler: Handler
         
         var routeEntry = RouteTable.Routes[(context.Request.HttpMethod, localUrl)];
         var controller = (ControllerBase)Activator.CreateInstance(routeEntry.ControllerType);
-        await (Task)routeEntry.Method.Invoke(controller, new object[] { context, server, token });
-        // await RouteTable.Routes[(localUrl, context.Request.HttpMethod)](context, server, token);
+        controller.Context = context;
+        controller.Server = server;
+        controller.Token = token;
+        await (Task)routeEntry.Method.Invoke(controller, null);
     }
 }
 

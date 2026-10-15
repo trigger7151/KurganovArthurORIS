@@ -9,45 +9,44 @@ public class LoginController : ControllerBase
 {
     [Method("POST")]
     [Route("")]
-    public async Task ProcessLoginPostAuth(HttpListenerContext context, Server server, CancellationToken token)
+    public async Task ProcessLoginPostAuth()
     {
-        var request = context.Request;
-        var response = context.Response;
+        var request = base.Context.Request;
+        var response = base.Context.Response;
         byte[] buffer = new byte[0];
-        if (request.HttpMethod == "POST" && request.Url!.AbsolutePath == "/login")
-        {
-            string body;
-            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
-                body = reader.ReadToEnd();
+        
+        string body;
+        using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+            body = reader.ReadToEnd();
 
-            var form = HttpUtility.ParseQueryString(body);
+        var form = HttpUtility.ParseQueryString(body);
 
-            string? login    = form["username"];
-            string? password = form["password"];
-            bool remember    = form["remember"] != null;
-            string[]? langs  = form.GetValues("lang[]");    
+        string? login    = form["username"];
+        string? password = form["password"];
+        bool remember    = form["remember"] != null;
+        string[]? langs  = form.GetValues("lang[]");    
 
-            Console.WriteLine($"login={login}, password={password}, remember={remember}");
+        Console.WriteLine($"login={login}, password={password}, remember={remember}");
 
-            response.StatusCode = (int)HttpStatusCode.OK;
-            response.ContentLength64 = buffer.Length;
-            using Stream output = response.OutputStream;
-            await output.WriteAsync(buffer, token);
-        }
+        response.StatusCode = (int)HttpStatusCode.OK;
+        response.ContentLength64 = buffer.Length;
+        using Stream output = response.OutputStream;
+        await output.WriteAsync(buffer, base.Token);
+        
     }
     [Method("GET")]
     [Route("")]
-    public async Task ProcessLoginGet(HttpListenerContext context, Server server, CancellationToken token)
+    public async Task ProcessLoginGet()
     {
-        var response = context.Response;
-        var request = context.Request;
+        var response = base.Context.Response;
+        var request = base.Context.Request;
         byte[] buffer = new byte[0];
         var localUrl = request.Url.LocalPath;
         Console.WriteLine($"Относительный url {localUrl}");
         var url = Path.Combine(AppContext.BaseDirectory + "static", localUrl.TrimStart('/'));
-        buffer = await File.ReadAllBytesAsync($"{server.ResponsePath}", token);
+        buffer = await File.ReadAllBytesAsync($"{base.Server.ResponsePath}", base.Token);
         response.ContentType = "text/html; charset=utf-8";
         using Stream output = response.OutputStream;
-        await output.WriteAsync(buffer, token);
+        await output.WriteAsync(buffer, base.Token);
     }
 }
