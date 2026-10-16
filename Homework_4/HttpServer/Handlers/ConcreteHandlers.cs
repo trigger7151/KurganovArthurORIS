@@ -4,6 +4,7 @@ using System.Reflection;
 using MimeTypesSpace;
 using Search_server;
 using HttpServer.Controllers;
+using HttpServer.Results;
 namespace HttpServer.Handlers;
 
 
@@ -112,7 +113,8 @@ public class RouteHandler: Handler
         controller.Context = context;
         controller.Server = server;
         controller.Token = token;
-        await (Task)routeEntry.Method.Invoke(controller, null);
+        var result = await (Task<IResult>)routeEntry.Method.Invoke(controller, null);
+        await result.Execute(context);
     }
 }
 

@@ -2,6 +2,7 @@ using System;
 using Search_server;
 using System.Net;
 using System.Web;
+using HttpServer.Results;
 namespace HttpServer.Controllers;
 
 [Route("/login")]
@@ -9,11 +10,11 @@ public class LoginController : ControllerBase
 {
     [Method("POST")]
     [Route("")]
-    public async Task ProcessLoginPostAuth()
+    public async Task<IResult> ProcessLoginPostAuth()
     {
         var request = base.Context.Request;
         var response = base.Context.Response;
-        byte[] buffer = new byte[0];
+        // byte[] buffer = new byte[0];
         
         string body;
         using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
@@ -28,25 +29,18 @@ public class LoginController : ControllerBase
 
         Console.WriteLine($"login={login}, password={password}, remember={remember}");
 
-        response.StatusCode = (int)HttpStatusCode.OK;
-        response.ContentLength64 = buffer.Length;
-        using Stream output = response.OutputStream;
-        await output.WriteAsync(buffer, base.Token);
+        var path = Path.Combine(AppContext.BaseDirectory + "static", "login/index.html");
+        var result = ReturnFileResult(path);
+        return result;
         
     }
     [Method("GET")]
     [Route("")]
-    public async Task ProcessLoginGet()
+    public async Task<IResult> ProcessLoginGet()
     {
-        var response = base.Context.Response;
-        var request = base.Context.Request;
-        byte[] buffer = new byte[0];
-        var localUrl = request.Url.LocalPath;
-        Console.WriteLine($"Относительный url {localUrl}");
-        var url = Path.Combine(AppContext.BaseDirectory + "static", localUrl.TrimStart('/'));
-        buffer = await File.ReadAllBytesAsync($"{base.Server.ResponsePath}", base.Token);
-        response.ContentType = "text/html; charset=utf-8";
-        using Stream output = response.OutputStream;
-        await output.WriteAsync(buffer, base.Token);
+        var path = Path.Combine(AppContext.BaseDirectory + "static", "login/index.html");
+        var result = ReturnFileResult(path);
+        return result;
     }
 }
+
