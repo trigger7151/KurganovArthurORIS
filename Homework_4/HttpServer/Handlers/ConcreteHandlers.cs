@@ -87,7 +87,8 @@ public class StaticHandler: Handler
         catch (OperationCanceledException){}
         catch (IOException)
         {
-            response.StatusCode = (int)HttpStatusCode.NotFound;
+            await base.Next.HandleAsync(context, server, token);
+            //response.StatusCode = (int)HttpStatusCode.NotFound;
         } 
         catch (System.UnauthorizedAccessException)
         {
