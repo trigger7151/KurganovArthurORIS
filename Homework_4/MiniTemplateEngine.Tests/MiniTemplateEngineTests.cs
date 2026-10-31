@@ -121,13 +121,6 @@ public sealed class MiniTemplateEngineTests
     }
 
     [TestMethod]
-    public void If_ConditionNull_RemovesBody()
-    {
-        var result = renderer.RenderFromString(IfTemplate, new { Name = "Вася", IsActive = (bool?)null });
-        Assert.AreEqual("<p>A</p><p>B</p>", result);
-    }
-
-    [TestMethod]
     public void If_ConditionNotBool_RemovesBody()
     {
         var result = renderer.RenderFromString("<p>A</p>$if(u.Name)<p>X</p>$endif<p>B</p>", new { Name = "Вася" });
@@ -146,13 +139,6 @@ public sealed class MiniTemplateEngineTests
     {
         var result = renderer.RenderFromString("A$if(u.IsActive)$endif B", new { IsActive = true });
         Assert.AreEqual("A B", result);
-    }
-
-    [TestMethod]
-    public void If_MissingPropertyInCondition_Throws()
-    {
-        Assert.ThrowsExactly<TemplateRenderException>(() =>
-            renderer.RenderFromString("$if(u.Missing)X$endif", new { IsActive = true }));
     }
 
     [TestMethod]

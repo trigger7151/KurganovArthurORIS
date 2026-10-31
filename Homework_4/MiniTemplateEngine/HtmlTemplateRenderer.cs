@@ -104,7 +104,7 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
         return htmlTemplate[0..positions.IfIndex] + body + htmlTemplate[(positions.EndIfIndex + endIf.Length)..htmlTemplate.Length];
     }
 
-    private bool EvaluateCondition(string condition, object model)
+    private static bool EvaluateCondition(string condition, object model)
     {
         
         throw new NotImplementedException();
