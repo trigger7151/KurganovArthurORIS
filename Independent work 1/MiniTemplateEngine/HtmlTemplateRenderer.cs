@@ -26,6 +26,61 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
     private const string endIf = "$endif";
     private const string Else = "$else";
 
+    public string RenderFromString(string htmlTemplate, object dataModel)
+    {
+        ArgumentNullException.ThrowIfNull(htmlTemplate);
+        var htmlText = ResolveIfStatement(htmlTemplate, dataModel);
+        return RenderVariables(htmlText, dataModel);
+    }
+
+    #region вспомогательные методы RenderFromString(string htmlTemplate, object dataModel)
+    private static string ResolveIfStatement(string htmlTemplate, object dataModel)
+    {
+        var positions = GetIfPositions(htmlTemplate);
+        string body = GetBody(htmlTemplate, dataModel, positions);
+        if (positions.IfIndex == -1)
+            return htmlTemplate;
+        return htmlTemplate[0..positions.IfIndex] + body + htmlTemplate[(positions.EndIfIndex + endIf.Length)..htmlTemplate.Length];
+    }
+
+    private static IfBlockPositions GetIfPositions(string htmlTemplate)
+    {
+        var ifIndex = htmlTemplate.IndexOf(ifStart);
+        if (ifIndex == -1)
+            return new (-1, -1, -1, -1);
+        var closingBracketIndex = htmlTemplate.IndexOf(")", ifIndex);
+        if (closingBracketIndex == -1)
+            throw new TemplateRenderException("closingBracket for $if() is missing");
+        var endIfIndex = htmlTemplate.IndexOf(endIf, closingBracketIndex);
+        if (endIfIndex == -1)
+            throw new TemplateRenderException("closing endIf is missing");
+        var elseIndex = htmlTemplate.IndexOf(Else, closingBracketIndex + 1, endIfIndex - closingBracketIndex - 1);
+        return new (ifIndex, closingBracketIndex, endIfIndex, elseIndex);
+    }
+
+    private static string GetBody(string htmlTemplate, object dataModel, IfBlockPositions positions)
+    {
+        if (positions.IfIndex == -1)
+            return "";
+        var condition = htmlTemplate[(positions.IfIndex + ifStart.Length)..positions.ClosingBracketIndex];
+        string body;
+        // расчет на то, что в условие передается bool. Другие типы не распознаются. 
+        // То есть тут нужно заменить на evaluate condition
+        if (ResolvePath(dataModel, condition) is true)
+        {
+            var bodyEndIndex = (new int[]{positions.ElseIndex, positions.EndIfIndex}).Where(num => num > -1).Min();
+            body = htmlTemplate[(positions.ClosingBracketIndex + ")".Length)..bodyEndIndex];
+        }
+        else
+        {
+            if (positions.ElseIndex == -1)
+                body = "";
+            else
+                body = htmlTemplate[(positions.ElseIndex + Else.Length)..positions.EndIfIndex];
+        }
+        return body;
+    }
+
     private static object? ResolvePath(object? model, string path)
     {
         var properties = path.Split('.');
@@ -59,64 +114,7 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
         return result;
     }
 
-    private static IfBlockPositions GetIfPositions(string htmlTemplate)
-    {
-        var ifIndex = htmlTemplate.IndexOf(ifStart);
-        if (ifIndex == -1)
-            return new (-1, -1, -1, -1);
-        var closingBracketIndex = htmlTemplate.IndexOf(")", ifIndex);
-        if (closingBracketIndex == -1)
-            throw new TemplateRenderException("closingBracket for $if() is missing");
-        var endIfIndex = htmlTemplate.IndexOf(endIf, closingBracketIndex);
-        if (endIfIndex == -1)
-            throw new TemplateRenderException("closing endIf is missing");
-        var elseIndex = htmlTemplate.IndexOf(Else, closingBracketIndex + 1, endIfIndex - closingBracketIndex - 1);
-        return new (ifIndex, closingBracketIndex, endIfIndex, elseIndex);
-    }
-
-    private static string GetBody(string htmlTemplate, object dataModel, IfBlockPositions positions)
-    {
-        if (positions.IfIndex == -1)
-            return "";
-        var condition = htmlTemplate[(positions.IfIndex + ifStart.Length)..positions.ClosingBracketIndex];
-        string body;
-        if (ResolvePath(dataModel, condition) is true)
-        {
-            var bodyEndIndex = (new int[]{positions.ElseIndex, positions.EndIfIndex}).Where(num => num > -1).Min();
-            body = htmlTemplate[(positions.ClosingBracketIndex + ")".Length)..bodyEndIndex];
-        }
-        else
-        {
-            if (positions.ElseIndex == -1)
-                body = "";
-            else
-                body = htmlTemplate[(positions.ElseIndex + Else.Length)..positions.EndIfIndex];
-        }
-        return body;
-    }
-
-    private static string ResolveIfStatement(string htmlTemplate, object dataModel)
-    {
-        var positions = GetIfPositions(htmlTemplate);
-        string body = GetBody(htmlTemplate, dataModel, positions);
-        if (positions.IfIndex == -1)
-            return htmlTemplate;
-        return htmlTemplate[0..positions.IfIndex] + body + htmlTemplate[(positions.EndIfIndex + endIf.Length)..htmlTemplate.Length];
-    }
-
-    private static bool EvaluateCondition(string condition, object model)
-    {
-        
-        throw new NotImplementedException();
-    }
-
-    public string RenderFromString(string htmlTemplate, object dataModel)
-    {
-        ArgumentNullException.ThrowIfNull(htmlTemplate);
-        var htmlText = ResolveIfStatement(htmlTemplate, dataModel);
-        return RenderVariables(htmlText, dataModel);
-    }
-
+    #endregion
     public string RenderFromFile(string filePath, object dataModel)
     {
         throw new NotImplementedException();

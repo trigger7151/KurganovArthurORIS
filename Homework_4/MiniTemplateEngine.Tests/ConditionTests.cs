@@ -236,10 +236,11 @@ public class ConditionTests
     }
 
     [TestMethod]
-    public void NumberAndQuotedNumber_NotEqual()
+    public void NumberAndQuotedNumber_Throws()
     {
-        // кавычки делают строку: число 21 не равно строке "21"
-        Assert.AreEqual("N", Check(@"u.Age == ""21""", new { Age = 21 }));
+        // кавычки делают строку: сравнивать число со строкой даже через == и != — ошибка шаблона
+        Assert.ThrowsExactly<TemplateRenderException>(() => Check(@"u.Age == ""21""", new { Age = 21 }));
+        Assert.ThrowsExactly<TemplateRenderException>(() => Check(@"u.Age != ""21""", new { Age = 21 }));
     }
 
     [TestMethod]
