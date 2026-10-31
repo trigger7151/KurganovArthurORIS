@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="HttpServer/HttpServer.csproj" />
+  <Project Path="MiniTemplateEngine.Tests/MiniTemplateEngine.Tests.csproj" />
+  <Project Path="MiniTemplateEngine/MiniTemplateEngine.csproj" />
+</Solution>

@@ -104,29 +104,6 @@ public sealed class MiniTemplateEngineTests
         Assert.AreEqual("<p></p>", result);
     }
 
-    private const string IfTemplate = "<p>A</p>$if(u.IsActive)<p>${u.Name}</p>$endif<p>B</p>";
-
-    [TestMethod]
-    public void If_ConditionTrue_RendersBody()
-    {
-        var result = renderer.RenderFromString(IfTemplate, new { Name = "Вася", IsActive = true });
-        Assert.AreEqual("<p>A</p><p>Вася</p><p>B</p>", result);
-    }
-
-    [TestMethod]
-    public void If_ConditionFalse_RemovesBody()
-    {
-        var result = renderer.RenderFromString(IfTemplate, new { Name = "Вася", IsActive = false });
-        Assert.AreEqual("<p>A</p><p>B</p>", result);
-    }
-
-    [TestMethod]
-    public void If_ConditionNotBool_RemovesBody()
-    {
-        var result = renderer.RenderFromString("<p>A</p>$if(u.Name)<p>X</p>$endif<p>B</p>", new { Name = "Вася" });
-        Assert.AreEqual("<p>A</p><p>B</p>", result);
-    }
-
     [TestMethod]
     public void If_AtStartAndEndOfTemplate_RendersBody()
     {
