@@ -222,7 +222,6 @@ public class ConditionTests
     public void DoubleRounding_EqualWithinEpsilon()
     {
         // 0.1 + 0.2 = 0.30000000000000004 — равенство должно учитывать погрешность.
-        // Удали этот тест, если решишь сравнивать double без допуска.
         Assert.AreEqual("Y", Check("u.Total == 0.3", new { Total = 0.1 + 0.2 }));
         Assert.AreEqual("Y", Check("u.Total <= 0.3", new { Total = 0.1 + 0.2 }));
     }
@@ -261,7 +260,6 @@ public class ConditionTests
     [TestMethod]
     public void NullInOrderingComparison_IsFalse()
     {
-        // сравнение null на больше/меньше всегда ложно, как у nullable-типов в C#
         Assert.AreEqual("N", Check("u.Age > 18", new { Age = (int?)null }));
         Assert.AreEqual("N", Check("u.Age <= 18", new { Age = (int?)null }));
         Assert.AreEqual("N", Check("18 < u.Age", new { Age = (int?)null }));
