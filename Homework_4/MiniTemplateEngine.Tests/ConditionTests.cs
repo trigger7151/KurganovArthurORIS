@@ -140,8 +140,6 @@ public class ConditionTests
             renderer.RenderFromString("$if(u.Obj1 > u.Obj2)X$endif", new {Obj1 = new ExampleClass(), Obj2 = 5}));
     }
 
-    // ---------- Перенесено из MiniTemplateEngineTests ----------
-
     [TestMethod]
     public void BoolCondition_True_RendersBody()
     {
