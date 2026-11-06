@@ -137,7 +137,7 @@ public class ConditionTests
     public void ComparingDifferentTypes_Throws()
     {
         Assert.ThrowsExactly<TemplateRenderException>(() =>
-            renderer.RenderFromString("$if(u.Obj1 > u.Obj2)X$endif", new {Obj1 = new ExampleClass(), Obj2 = 5}));
+            renderer.RenderFromString("$if(u.Obj1 > u.Obj2)X$endif", new {Obj1 = new ComparableClass(1), Obj2 = 5}));
     }
 
     [TestMethod]

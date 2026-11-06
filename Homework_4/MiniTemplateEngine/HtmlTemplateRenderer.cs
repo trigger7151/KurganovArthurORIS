@@ -27,6 +27,7 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
     private const string ifStart = "$if(";
     private const string endIf = "$endif";
     private const string Else = "$else";
+    private const double Epsilon = 1e-9;
 
     public string RenderFromString(string htmlTemplate, object dataModel)
     {
@@ -67,11 +68,8 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
             return "";
         var condition = htmlTemplate[(positions.IfIndex + ifStart.Length)..positions.ClosingBracketIndex];
         string body;
-        if (ResolvePath(dataModel, condition) is null)
-        {
-            return "";
-        }
-        else if (ResolvePath(dataModel, condition) is true || EvaluateCondition(condition, dataModel))
+
+        if (EvaluateCondition(condition, dataModel))
         {
             var bodyEndIndex = (new int[]{positions.ElseIndex, positions.EndIfIndex}).Where(num => num > -1).Min();
             body = htmlTemplate[(positions.ClosingBracketIndex + ")".Length)..bodyEndIndex];
@@ -86,19 +84,21 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
         return body;
     }
 
-    private static bool EvaluateCondition1(string condition, object model)
+    private static bool EvaluateCondition(string condition, object model)
     {
         var leftOperand = ConditionReader.GetOperand(condition);
+        var trimmedLeftOperand = leftOperand.TrimStart();
         var conditionAfterOperand = String.Concat(condition.Skip(leftOperand.Length));
 
         var conditionOperator = ConditionReader.GetOperator(conditionAfterOperand);
-
+        if (conditionOperator is null)
+            return EvaluateOperandAsCondition(trimmedLeftOperand, model);
         var conditionAfterOperator = String.Concat(conditionAfterOperand.Skip(conditionOperator.Value.Value.Length + conditionOperator.Value.Index));
 
         var rightOperand = ConditionReader.GetOperand(conditionAfterOperator);
+        var trimmedRightOperand = rightOperand.TrimStart();
 
-
-        throw new NotImplementedException();
+        return EvaluateFullCondition(trimmedLeftOperand, conditionOperator.Value.Value, trimmedRightOperand, model);
     }
 
     private static bool EvaluateOperandAsCondition(string operand, object model)
@@ -114,21 +114,83 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
 
             default:
                 var c =  trimmedOperand.First();
-                if (c >= '0' && c <+ '9')
+                if (c >= '0' && c <= '9')
                     throw new TemplateRenderException("");
                 else
-                    return ResolvePath(model, trimmedOperand) is true;
+                {
+                    var resolved = ResolvePath(model, trimmedOperand);
+                    if (resolved is not true && resolved is not false && resolved is not null)
+                        throw new TemplateRenderException("");
+                    return resolved is true;
+                }
                 
         }
     }
 
     private static bool EvaluateFullCondition(string leftOperand, string op, string rightOperand, object model)
     {
-        var leftOperandObj = (IComparable)CastOperand(leftOperand, model);
-        var rightOperandObj = (IComparable)CastOperand(rightOperand, model);
+        IComparable leftOperandObj;
+        IComparable rightOperandObj;
+        try
+        {
+            leftOperandObj = (IComparable)CastOperand(leftOperand, model);
+            rightOperandObj = (IComparable)CastOperand(rightOperand, model);
+        }
+        catch (InvalidCastException ex)
+        {
+            throw new TemplateRenderException(ex.Message);
+        }
 
-        var result = leftOperandObj.CompareTo(rightOperand);
-        throw new NotImplementedException();
+        if (leftOperandObj is null || rightOperandObj is null)
+        {
+            return op switch
+            {
+                "==" => Object.Equals(leftOperandObj, rightOperandObj),
+                "!=" => !Object.Equals(leftOperandObj, rightOperandObj),
+                ">" or "<" or ">=" or "<=" => false,
+                _ => throw new TemplateRenderException(""),
+            };
+        }
+        if (leftOperandObj.GetType() != rightOperandObj.GetType())
+            throw new TemplateRenderException("");
+
+        if (leftOperandObj is double a && rightOperandObj is double b)
+            return CompareDoubles(a, b, op);
+            
+        var result = leftOperandObj.CompareTo(rightOperandObj);
+
+        return op switch
+        {
+            ">=" => result >= 0,
+            "<=" => result <= 0,
+            ">" => result > 0,
+            "<" => result < 0,
+            "==" => result == 0,
+            "!=" => result != 0,
+            _ => throw new TemplateRenderException(""),
+        };
+    }
+
+    private static bool CompareDoubles(double a, double b, string op)
+    {
+        bool equal = Math.Abs(a - b) < Epsilon;
+
+        return op switch
+        {
+            "==" => equal,
+            "!=" => !equal,
+            ">=" => a > b || equal,
+            "<=" => a < b || equal,
+            ">"  => a > b && !equal,
+            "<"  => a < b && !equal,
+            _ => throw new TemplateRenderException($"Unknown operator '{op}'"),
+        };
+    }
+    private static bool IsNumber(object obj)
+    { 
+        return obj is
+        sbyte or byte or short or ushort or int or uint or
+        long or ulong or float or double or decimal;
     }
 
     private static object CastOperand(string operand, object model)
@@ -144,220 +206,18 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
                 return false;
             default:
                 var first = operand.First();
+                object? resolved;
                 if (first == '"')
                     return operand[1..^1];
                 else if (first >= '0' && first <= '9')
                     return double.Parse(operand, CultureInfo.InvariantCulture);
+                else if (IsNumber(resolved = ResolvePath(model, operand)))
+                    return Convert.ToDouble(resolved);
                 else
-                    return ResolvePath(model, operand);
+                    return resolved;
                 
         }
     }
-
-    private static bool EvaluateCondition(string condition, object model)
-    {
-        var leftOperand = FindLeftOperand(condition);
-        var op = FindOperator(condition, leftOperand.endIndex + 1);
-        if (op is null)
-            throw new TemplateRenderException("operator was not found");
-        var rightOperand = FindRightOperand(condition, op.Value.op, op.Value.index);
-        IComparable operand1;
-        IComparable operand2;
-        if (leftOperand.type == "string")
-            operand1 = leftOperand.operand;
-        else 
-            operand1 = (IComparable)ResolvePath(model, leftOperand.operand);
-
-        if (rightOperand.type == "string")
-            operand2 = rightOperand.operand;
-        else 
-            operand2 = (IComparable)ResolvePath(model, rightOperand.operand);
-
-        var result = operand1.CompareTo(operand2);
-        if (op.Value.op == "<=")
-        {
-            if (result <= 0)
-                return true;
-            else
-                return false;
-        }
-        else if (op.Value.op == ">=")
-        {
-            if (result >= 0)
-                return true;
-            else
-                return false;
-        }
-        else if (op.Value.op == "<")
-        {
-            if (result < 0)
-                return true;
-            else
-                return false;
-        }
-        else if (op.Value.op == ">")
-        {
-            if (result > 0)
-                return true;
-            else
-                return false;
-        }
-        else if (op.Value.op == "==")
-        {
-            if (result == 0)
-                return true;
-            else
-                return false;
-        }
-        else
-        {
-            if (result != 0)
-                return true;
-            else
-                return false;
-        }
-    }
-
-    #region Вспомогательные методы EvaluateCondition(string condition, object model)
-
-    private static (string operand, int endIndex, string type) FindLeftOperand(string condition)
-    {
-        var firstCharacter = FindFirstNonSpaceCharacter(condition);
-        if (firstCharacter == '"')
-        {
-            var operand = ReadAsString(condition);
-            return (operand.operand, operand.endIndex, "string");
-        }
-        else if (Char.IsLetter(firstCharacter) || firstCharacter == '_')
-        {
-            var operand = ReadOperandAsText(condition);
-            return (operand.operand, operand.endIndex, "property");
-        }
-        else
-            throw new TemplateRenderException("left operand was not found");
-    }
-
-    private static (string operand, int endIndex, string type) FindRightOperand(string condition, string op, int index)
-    {
-        var firstCharacter = FindFirstNonSpaceCharacter(String.Concat(condition.Skip(index + op.Length)));
-        if (firstCharacter == '"')
-        {
-            var operand = ReadAsString(String.Concat(condition.Skip(index + op.Length)));
-            return (operand.operand, operand.endIndex, "string");
-        }
-        else if (Char.IsLetter(firstCharacter) || firstCharacter == '_')
-        {
-            var operand = ReadOperandAsText(String.Concat(condition.Skip(index + op.Length)));
-            return (operand.operand, operand.endIndex, "property");
-        }
-        else
-            throw new TemplateRenderException("right operand was not found");
-        throw new NotImplementedException();
-    }
-
-    // startIndex - индекс после левого операнда
-    private static (string op, int index)? FindOperator(string condition, int startIndex)
-    {
-        // if (startIndex == -1)
-        //     throw new TemplateRenderException("");
-        
-        var trimmedCondition = string.Concat(condition.Skip(startIndex));
-        for (int i = startIndex; i != condition.Length; i++)
-        {
-            switch (condition[i])
-            {
-                case ' ':
-                    continue;
-                case '<':
-                    if (condition.IndexOf("<=") == i)
-                        return ("<=", i);
-                    else
-                        return ("<", i);
-                case '>':
-                    if (condition.IndexOf(">=") == i)
-                        return (">=", i);
-                    else
-                        return (">", i);
-                case '=':
-                    if (condition.IndexOf("==") == i)
-                        return ("==", i);
-                    else
-                        throw new TemplateRenderException("");
-                case '!':
-                    if (condition.IndexOf("!=") == i)
-                        return ("!=", i);
-                    else
-                        throw new TemplateRenderException("");
-                default:
-                    throw new TemplateRenderException("");
-            }
-        }
-        return null;
-    }
-
-    private static (string operand, int endIndex) ReadAsString(string condition)
-    {
-        var trimmedCondition = condition.TrimStart().TrimStart('"') + " ";
-        var count = condition.Length - trimmedCondition.Length;
-        var foundStartingMark  = false;
-        var foundEscapingMark = false;
-        var builder = new StringBuilder();
-        foreach (var c in trimmedCondition)
-        {
-            if (c == '"' && !foundEscapingMark)
-                foundEscapingMark = true;
-            else if (foundEscapingMark && c == '"')
-                foundEscapingMark = false;
-            else if (foundEscapingMark && c != '"')
-                return (builder.ToString(), count + builder.Length);
-            builder.Append(c);
-        }
-        if (builder.Length == 0)
-            throw new TemplateRenderException("Missing operand");
-        throw new TemplateRenderException("Missing closing quote mark");
-    }
-
-
-    private static (string operand, int endIndex) ReadOperandAsText(string condition)
-    {
-        var trimmedCondition = condition.TrimStart();
-        var count = condition.Length - trimmedCondition.Length;
-        var builder = new StringBuilder();
-        foreach (var c in condition)
-        {
-            if (!(Char.IsLetter(c) || c == '_' || Char.IsNumber(c) || c == '.'))
-                break;
-            builder.Append(c);
-        }
-        if (builder.Length == 0)
-            throw new TemplateRenderException("Missing operand");
-        return (builder.ToString(), count + builder.Length - 1);
-    }
-
-    private static int GetSubstringOccurrences(string str, string substring, int startIndex)
-    {
-        var count = 0;
-        var index = str.IndexOf(substring, startIndex);
-        if (index == -1)
-            return count;
-        while(index != -1)
-        {
-            index = str.IndexOf(substring, index + substring.Length);
-            count++;
-        }
-        return count;
-    }
-
-    private static char FindFirstNonSpaceCharacter(string condition)
-    {
-        var trimmedCondition = condition.TrimStart();
-        if (trimmedCondition.Length == 0)
-            throw new TemplateRenderException("empty condition");
-        return condition.TrimStart().First();
-    }
-
-
-    #endregion
 
     private static object ResolvePath(object? model, string path)
     {
@@ -405,7 +265,7 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
     }
 }
 
-public class ConditionReader
+internal class ConditionReader
 {
     public static string GetOperand(string str)
     {
@@ -447,7 +307,7 @@ public class ConditionReader
                     throw new TemplateRenderException("");
             }
         }
-        throw new NotImplementedException();
+        return null;
     }
 
 }

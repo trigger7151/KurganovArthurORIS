@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MiniTemplateEngine;
 
-public enum State
+internal enum State
 {
     First,
     Second,
@@ -17,7 +17,7 @@ public enum State
     Accepted,
     TemplateError
 }
-public class OperandReader
+internal class OperandReader
 {
     public State CurrentState {get; private set;} = State.First;
 
@@ -113,23 +113,20 @@ public class OperandReader
         switch (c)
         {
             case '"':
-                return State.Second;
+                return State.Third;
 
             case not '"':
-                return State.Third;
+                return State.Second;
         }
     }
 
     private State SwitchFromThird(char c)
     {
-        switch (c)
+        return c switch
         {
-            case '"':
-                return State.Second;
-
-            default:
-                return State.Accepted;
-        }
+            '"' => State.Second,
+            _ => State.Accepted,
+        };
     }
 
     private State SwitchFromFourth(char c)
@@ -170,39 +167,30 @@ public class OperandReader
 
     private State SwitchFromSixth(char c)
     {
-        switch (c)
+        return c switch
         {
-            case >= '0' and <= '9':
-                return State.Sixth;
-
-            case '.':
-                return State.Seventh;
-
-            default:
-                return State.Accepted;
-        }
+            >= '0' and <= '9' => State.Sixth,
+            '.' => State.Seventh,
+            _ => State.Accepted,
+        };
     }
 
     private State SwitchFromSeventh(char c)
     {
-        switch (c)
+        return c switch
         {
-            case >= '0' and <= '9':
-                return State.Eighth;
-            default:
-                return State.TemplateError;
-        }
+            >= '0' and <= '9' => State.Eighth,
+            _ => State.TemplateError,
+        };
     }
 
     private State SwitchFromEighth(char c)
     {
-        switch (c)
+        return c switch
         {
-            case >= '0' and <= '9':
-                return State.Eighth;
-            default:
-                return State.Accepted;
-        }
+            >= '0' and <= '9' => State.Eighth,
+            _ => State.Accepted,
+        };
     }
     #endregion
 
