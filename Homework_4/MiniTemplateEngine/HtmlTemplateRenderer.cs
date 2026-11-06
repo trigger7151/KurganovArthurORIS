@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -66,7 +66,7 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
         int pos = 0;
         while (true)
         {
-            int ifPos = template.IndexOf(IfStart, pos, StringComparison.Ordinal);
+            int ifPos = template.IndexOf(IfStart, pos, StringComparison.Ordinal); 
             int forPos = template.IndexOf(ForeachStart, pos, StringComparison.Ordinal);
             int next = ifPos == -1 ? forPos
                      : forPos == -1 ? ifPos

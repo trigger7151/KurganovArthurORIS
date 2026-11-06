@@ -2,27 +2,10 @@ using System;
 using System.Net;
 using HttpServer.Results;
 using Search_server;
+using HttpServer.Framework.Attributes;
 using HttpServer.Results;
 
-namespace HttpServer.Controllers;
-
-public class RouteAttribute: Attribute
-{
-    public string Path{get;}
-    public RouteAttribute(string path)
-    {
-        Path = path;
-    }
-}
-public class MethodAttribute: Attribute
-{
-    public string Method{get;}
-    public MethodAttribute(string method)
-    {
-        Method = method;
-    }
-    
-}
+namespace HttpServer.Framework;
 
 public abstract class ControllerBase
 {
