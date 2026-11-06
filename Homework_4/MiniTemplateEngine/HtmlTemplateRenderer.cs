@@ -1,107 +1,217 @@
-﻿using System.Reflection.Metadata;
+using System.Collections;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Globalization;
 
 namespace MiniTemplateEngine;
 
-internal record IfBlockPositions
+/// <summary>
+/// Контекст рендеринга: корневая модель и переменные, объявленные циклами $foreach.
+/// </summary>
+internal record Context(object? Model, IReadOnlyDictionary<string, object?> Vars)
 {
-    public int IfIndex{get;init;}
-    public int ClosingBracketIndex{get;init;}
-    public int EndIfIndex{get;init;}
-    public int ElseIndex{get;init;}
+    public static Context Root(object? model) => new(model, new Dictionary<string, object?>());
 
-    public IfBlockPositions(int ifIndex, int closingBracketsIndex, int endIfIndex, int elseIndex)
+    // Возвращает новый контекст с добавленной переменной цикла (старый не меняется).
+    public Context With(string name, object? value)
     {
-        IfIndex = ifIndex;
-        ClosingBracketIndex = closingBracketsIndex;
-        EndIfIndex = endIfIndex;
-        ElseIndex = elseIndex;
+        var vars = new Dictionary<string, object?>(Vars) { [name] = value };
+        return this with { Vars = vars };
     }
 }
 
 public class HtmlTemplateRenderer : IHtmlTemplateRenderer
 {
     private static readonly Regex VariableRegex = new(@"\$\{([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*)\}");
-    private const string ifStart = "$if(";
-    private const string endIf = "$endif";
+    private static readonly Regex ForeachHeaderRegex =
+        new(@"^\s*var\s+([a-zA-Z_]\w*)\s+in\s+([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*)\s*$");
+
+    private const string IfStart = "$if(";
     private const string Else = "$else";
+    private const string EndIf = "$endif";
+    private const string ForeachStart = "$foreach(";
+    private const string EndFor = "$endfor";
     private const double Epsilon = 1e-9;
 
     public string RenderFromString(string htmlTemplate, object dataModel)
     {
         ArgumentNullException.ThrowIfNull(htmlTemplate);
-        var htmlText = ResolveIfStatement(htmlTemplate, dataModel);
-        return RenderVariables(htmlText, dataModel);
+        return Render(htmlTemplate, Context.Root(dataModel));
     }
 
-    #region Вспомогательные методы для RenderFromString(string htmlTemplate, object dataModel)
-
-    private static string ResolveIfStatement(string htmlTemplate, object dataModel)
+    public string RenderFromFile(string filePath, object dataModel)
     {
-        var positions = GetIfPositions(htmlTemplate);
-        string body = GetBody(htmlTemplate, dataModel, positions);
-        if (positions.IfIndex == -1)
-            return htmlTemplate;
-        return htmlTemplate[0..positions.IfIndex] + body + htmlTemplate[(positions.EndIfIndex + endIf.Length)..htmlTemplate.Length];
+        ArgumentNullException.ThrowIfNull(filePath);
+        return RenderFromString(File.ReadAllText(filePath), dataModel);
     }
 
-    private static IfBlockPositions GetIfPositions(string htmlTemplate)
+    public string RenderToFile(string inputFilePath, string outputFilePath, object dataModel)
     {
-        var ifIndex = htmlTemplate.IndexOf(ifStart);
-        if (ifIndex == -1)
-            return new (-1, -1, -1, -1);
-        var closingBracketIndex = htmlTemplate.IndexOf(")", ifIndex);
-        if (closingBracketIndex == -1)
+        ArgumentNullException.ThrowIfNull(outputFilePath);
+        var result = RenderFromFile(inputFilePath, dataModel);
+        File.WriteAllText(outputFilePath, result);
+        return result;
+    }
+
+    #region Разбор блоков $if / $foreach
+
+    /// <summary>
+    /// Проходит шаблон слева направо: обычный текст выводится с подстановкой ${...},
+    /// а каждый блок $if/$foreach обрабатывается отдельно, и его тело рендерится
+    /// этим же методом рекурсивно. Так работают и несколько блоков подряд, и вложенность.
+    /// </summary>
+    private static string Render(string template, Context ctx)
+    {
+        var sb = new StringBuilder();
+        int pos = 0;
+        while (true)
+        {
+            int ifPos = template.IndexOf(IfStart, pos, StringComparison.Ordinal);
+            int forPos = template.IndexOf(ForeachStart, pos, StringComparison.Ordinal);
+            int next = ifPos == -1 ? forPos
+                     : forPos == -1 ? ifPos
+                     : Math.Min(ifPos, forPos);
+
+            if (next == -1)
+            {
+                sb.Append(RenderVariables(template[pos..], ctx));
+                break;
+            }
+
+            sb.Append(RenderVariables(template[pos..next], ctx));
+            pos = next == ifPos
+                ? RenderIf(template, next, ctx, sb)
+                : RenderForeach(template, next, ctx, sb);
+        }
+        return sb.ToString();
+    }
+
+    // Рендерит блок $if, начинающийся с позиции start; возвращает позицию сразу после $endif.
+    private static int RenderIf(string template, int start, Context ctx, StringBuilder sb)
+    {
+        int closeBracket = template.IndexOf(')', start);
+        if (closeBracket == -1)
             throw new TemplateRenderException("closingBracket for $if() is missing");
-        var endIfIndex = htmlTemplate.IndexOf(endIf, closingBracketIndex);
-        if (endIfIndex == -1)
-            throw new TemplateRenderException("closing endIf is missing");
-        var elseIndex = htmlTemplate.IndexOf(Else, closingBracketIndex + 1, endIfIndex - closingBracketIndex - 1);
-        return new (ifIndex, closingBracketIndex, endIfIndex, elseIndex);
-    }
 
-    private static string GetBody(string htmlTemplate, object dataModel, IfBlockPositions positions)
-    {
-        if (positions.IfIndex == -1)
-            return "";
-        var condition = htmlTemplate[(positions.IfIndex + ifStart.Length)..positions.ClosingBracketIndex];
+        int endIf = FindMatching(template, closeBracket + 1, IfStart, EndIf);
+        int elsePos = FindElse(template, closeBracket + 1, endIf);
+
+        var condition = template[(start + IfStart.Length)..closeBracket];
         string body;
-
-        if (EvaluateCondition(condition, dataModel))
-        {
-            var bodyEndIndex = (new int[]{positions.ElseIndex, positions.EndIfIndex}).Where(num => num > -1).Min();
-            body = htmlTemplate[(positions.ClosingBracketIndex + ")".Length)..bodyEndIndex];
-        }
+        if (EvaluateCondition(condition, ctx))
+            body = template[(closeBracket + 1)..(elsePos == -1 ? endIf : elsePos)];
         else
-        {
-            if (positions.ElseIndex == -1)
-                body = "";
-            else
-                body = htmlTemplate[(positions.ElseIndex + Else.Length)..positions.EndIfIndex];
-        }
-        return body;
+            body = elsePos == -1 ? "" : template[(elsePos + Else.Length)..endIf];
+
+        sb.Append(Render(body, ctx));
+        return endIf + EndIf.Length;
     }
 
-    private static bool EvaluateCondition(string condition, object model)
+    // Рендерит блок $foreach, начинающийся с позиции start; возвращает позицию сразу после $endfor.
+    private static int RenderForeach(string template, int start, Context ctx, StringBuilder sb)
+    {
+        int closeBracket = template.IndexOf(')', start);
+        if (closeBracket == -1)
+            throw new TemplateRenderException("closingBracket for $foreach() is missing");
+
+        int endFor = FindMatching(template, closeBracket + 1, ForeachStart, EndFor);
+
+        var header = template[(start + ForeachStart.Length)..closeBracket];
+        var match = ForeachHeaderRegex.Match(header);
+        if (!match.Success)
+            throw new TemplateRenderException($"Неверный заголовок $foreach({header})");
+
+        var itemName = match.Groups[1].Value;
+        var collectionPath = match.Groups[2].Value;
+        var collection = ResolvePath(ctx, collectionPath);
+
+        var body = template[(closeBracket + 1)..endFor];
+        if (collection is null)
+            return endFor + EndFor.Length;   // нет коллекции — нечего выводить
+        if (collection is string || collection is not IEnumerable items)
+            throw new TemplateRenderException($"'{collectionPath}' не является коллекцией");
+
+        foreach (var item in items)
+            sb.Append(Render(body, ctx.With(itemName, item)));
+
+        return endFor + EndFor.Length;
+    }
+
+    /// <summary>
+    /// Ищет закрывающий тег, парный открывающему, с учётом вложенных блоков того же вида.
+    /// </summary>
+    private static int FindMatching(string template, int from, string open, string close)
+    {
+        int depth = 0;
+        for (int i = from; i < template.Length; i++)
+        {
+            var rest = template.AsSpan(i);
+            if (rest.StartsWith(open, StringComparison.Ordinal))
+            {
+                depth++;
+                i += open.Length - 1;
+            }
+            else if (rest.StartsWith(close, StringComparison.Ordinal))
+            {
+                if (depth == 0)
+                    return i;
+                depth--;
+                i += close.Length - 1;
+            }
+        }
+        throw new TemplateRenderException($"closing {close} is missing");
+    }
+
+    /// <summary>
+    /// Ищет $else, относящийся к текущему $if (на глубине 0), между from и endIf.
+    /// $else вложенных $if пропускаются.
+    /// </summary>
+    private static int FindElse(string template, int from, int endIf)
+    {
+        int depth = 0;
+        for (int i = from; i < endIf; i++)
+        {
+            var rest = template.AsSpan(i);
+            if (rest.StartsWith(IfStart, StringComparison.Ordinal))
+            {
+                depth++;
+                i += IfStart.Length - 1;
+            }
+            else if (rest.StartsWith(EndIf, StringComparison.Ordinal))
+            {
+                depth--;
+                i += EndIf.Length - 1;
+            }
+            else if (depth == 0 && rest.StartsWith(Else, StringComparison.Ordinal))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    #endregion
+
+    #region Условия
+
+    private static bool EvaluateCondition(string condition, Context ctx)
     {
         var leftOperand = ConditionReader.GetOperand(condition);
         var trimmedLeftOperand = leftOperand.TrimStart();
-        var conditionAfterOperand = String.Concat(condition.Skip(leftOperand.Length));
+        var conditionAfterOperand = string.Concat(condition.Skip(leftOperand.Length));
 
         var conditionOperator = ConditionReader.GetOperator(conditionAfterOperand);
         if (conditionOperator is null)
-            return EvaluateOperandAsCondition(trimmedLeftOperand, model);
-        var conditionAfterOperator = String.Concat(conditionAfterOperand.Skip(conditionOperator.Value.Value.Length + conditionOperator.Value.Index));
+            return EvaluateOperandAsCondition(trimmedLeftOperand, ctx);
+        var conditionAfterOperator = string.Concat(conditionAfterOperand.Skip(conditionOperator.Value.Value.Length + conditionOperator.Value.Index));
 
         var rightOperand = ConditionReader.GetOperand(conditionAfterOperator);
         var trimmedRightOperand = rightOperand.TrimStart();
 
-        return EvaluateFullCondition(trimmedLeftOperand, conditionOperator.Value.Value, trimmedRightOperand, model);
+        return EvaluateFullCondition(trimmedLeftOperand, conditionOperator.Value.Value, trimmedRightOperand, ctx);
     }
 
-    private static bool EvaluateOperandAsCondition(string operand, object model)
+    private static bool EvaluateOperandAsCondition(string operand, Context ctx)
     {
         var trimmedOperand = operand.TrimStart();
         switch (trimmedOperand)
@@ -113,28 +223,25 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
                 return false;
 
             default:
-                var c =  trimmedOperand.First();
+                var c = trimmedOperand.First();
                 if (c >= '0' && c <= '9')
-                    throw new TemplateRenderException("");
-                else
-                {
-                    var resolved = ResolvePath(model, trimmedOperand);
-                    if (resolved is not true && resolved is not false && resolved is not null)
-                        throw new TemplateRenderException("");
-                    return resolved is true;
-                }
-                
+                    throw new TemplateRenderException("Число не может быть условием без оператора сравнения");
+
+                var resolved = ResolvePath(ctx, trimmedOperand);
+                if (resolved is not true && resolved is not false && resolved is not null)
+                    throw new TemplateRenderException($"'{trimmedOperand}' не является булевым значением");
+                return resolved is true;
         }
     }
 
-    private static bool EvaluateFullCondition(string leftOperand, string op, string rightOperand, object model)
+    private static bool EvaluateFullCondition(string leftOperand, string op, string rightOperand, Context ctx)
     {
-        IComparable leftOperandObj;
-        IComparable rightOperandObj;
+        IComparable? leftOperandObj;
+        IComparable? rightOperandObj;
         try
         {
-            leftOperandObj = (IComparable)CastOperand(leftOperand, model);
-            rightOperandObj = (IComparable)CastOperand(rightOperand, model);
+            leftOperandObj = (IComparable?)CastOperand(leftOperand, ctx);
+            rightOperandObj = (IComparable?)CastOperand(rightOperand, ctx);
         }
         catch (InvalidCastException ex)
         {
@@ -145,18 +252,19 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
         {
             return op switch
             {
-                "==" => Object.Equals(leftOperandObj, rightOperandObj),
-                "!=" => !Object.Equals(leftOperandObj, rightOperandObj),
+                "==" => Equals(leftOperandObj, rightOperandObj),
+                "!=" => !Equals(leftOperandObj, rightOperandObj),
                 ">" or "<" or ">=" or "<=" => false,
-                _ => throw new TemplateRenderException(""),
+                _ => throw new TemplateRenderException($"Unknown operator '{op}'"),
             };
         }
         if (leftOperandObj.GetType() != rightOperandObj.GetType())
-            throw new TemplateRenderException("");
+            throw new TemplateRenderException(
+                $"Нельзя сравнить {leftOperandObj.GetType().Name} и {rightOperandObj.GetType().Name}");
 
         if (leftOperandObj is double a && rightOperandObj is double b)
             return CompareDoubles(a, b, op);
-            
+
         var result = leftOperandObj.CompareTo(rightOperandObj);
 
         return op switch
@@ -167,7 +275,7 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
             "<" => result < 0,
             "==" => result == 0,
             "!=" => result != 0,
-            _ => throw new TemplateRenderException(""),
+            _ => throw new TemplateRenderException($"Unknown operator '{op}'"),
         };
     }
 
@@ -181,21 +289,21 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
             "!=" => !equal,
             ">=" => a > b || equal,
             "<=" => a < b || equal,
-            ">"  => a > b && !equal,
-            "<"  => a < b && !equal,
+            ">" => a > b && !equal,
+            "<" => a < b && !equal,
             _ => throw new TemplateRenderException($"Unknown operator '{op}'"),
         };
     }
-    private static bool IsNumber(object obj)
-    { 
+
+    private static bool IsNumber(object? obj)
+    {
         return obj is
-        sbyte or byte or short or ushort or int or uint or
-        long or ulong or float or double or decimal;
+            sbyte or byte or short or ushort or int or uint or
+            long or ulong or float or double or decimal;
     }
 
-    private static object CastOperand(string operand, object model)
+    private static object? CastOperand(string operand, Context ctx)
     {
-
         switch (operand)
         {
             case "null":
@@ -206,63 +314,56 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
                 return false;
             default:
                 var first = operand.First();
-                object? resolved;
                 if (first == '"')
                     return operand[1..^1];
-                else if (first >= '0' && first <= '9')
+                if (first >= '0' && first <= '9')
                     return double.Parse(operand, CultureInfo.InvariantCulture);
-                else if (IsNumber(resolved = ResolvePath(model, operand)))
-                    return Convert.ToDouble(resolved);
-                else
-                    return resolved;
-                
+
+                var resolved = ResolvePath(ctx, operand);
+                return IsNumber(resolved) ? Convert.ToDouble(resolved) : resolved;
         }
     }
 
-    private static object ResolvePath(object? model, string path)
+    #endregion
+
+    #region Переменные
+
+    /// <summary>
+    /// Достаёт значение по пути вида a.B.C через рефлексию.
+    /// Если первая часть пути — переменная цикла, начинаем с неё, иначе с корневой модели
+    /// (имя корня в шаблоне может быть любым).
+    /// </summary>
+    private static object? ResolvePath(Context ctx, string path)
     {
         var properties = path.Split('.');
-        object? value = model;
+        object? value = ctx.Vars.TryGetValue(properties[0], out var loopValue) ? loopValue : ctx.Model;
+
         for (int i = 1; i < properties.Length; i++)
         {
             if (value is null)
-            {
                 return null;
-            }
-            var propertyType = value.GetType();
-            var propertyInfo = propertyType.GetProperty(properties[i]);
+
+            var type = value.GetType();
+            var propertyInfo = type.GetProperty(properties[i]);
             if (propertyInfo is null)
-            {
                 throw new TemplateRenderException(
-                    $"Свойство '{properties[i]}' не найдено в типе {propertyType.Name} (путь {path})");
-            }
+                    $"Свойство '{properties[i]}' не найдено в типе {type.Name} (путь {path})");
+
             value = propertyInfo.GetValue(value);
         }
         return value;
     }
 
-    private static string RenderVariables(string htmlTemplate, object? dataModel)
+    private static string RenderVariables(string text, Context ctx)
     {
-        var result = VariableRegex.Replace(htmlTemplate, (match) => 
+        return VariableRegex.Replace(text, match =>
         {
-            var variable = match.Groups[1].Value;
-            var value = ResolvePath(dataModel, variable);
+            var value = ResolvePath(ctx, match.Groups[1].Value);
             return value?.ToString() ?? string.Empty;
         });
-        return result;
     }
 
     #endregion
-
-    public string RenderFromFile(string filePath, object dataModel)
-    {
-        throw new NotImplementedException();
-    }
-
-    public string RenderToFile(string inputFilePath, string outputFilePath, object dataModel)
-    {
-        throw new NotImplementedException();
-    }
 }
 
 internal class ConditionReader
@@ -297,17 +398,16 @@ internal class ConditionReader
                     if (str.IndexOf("==") == i)
                         return ("==", i);
                     else
-                        throw new TemplateRenderException("");
+                        throw new TemplateRenderException("Ожидался оператор '=='");
                 case '!':
                     if (str.IndexOf("!=") == i)
                         return ("!=", i);
                     else
-                        throw new TemplateRenderException("");
+                        throw new TemplateRenderException("Ожидался оператор '!='");
                 default:
-                    throw new TemplateRenderException("");
+                    throw new TemplateRenderException($"Неожиданный символ '{str[i]}' в условии");
             }
         }
         return null;
     }
-
 }
