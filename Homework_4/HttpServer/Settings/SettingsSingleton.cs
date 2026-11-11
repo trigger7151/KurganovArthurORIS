@@ -11,6 +11,7 @@ public class ServerSettings
     private static readonly object Lock = new object();
     public string ResponsePath{get;}
     public string[] Prefixes{get;}
+    public string ConnectionString { get; }
     private ServerSettings()
     {
         var settingsPath = Path.Combine(AppContext.BaseDirectory, "Settings/settings.json");
@@ -35,6 +36,7 @@ public class ServerSettings
         }
         ResponsePath = responsePath;
         Prefixes = settingsObj.prefixes;
+        ConnectionString = settingsObj.connectionString;
     }
     private static Settings DeserializeSettings(string settingsPath)
     {
