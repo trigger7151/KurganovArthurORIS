@@ -31,12 +31,6 @@ public sealed class OrmContextTests
     }
 
     [TestMethod]
-    public async Task GetAllAsync_TableName63Symbols_CorrectResult()
-    {
-        
-    }
-
-    [TestMethod]
     public async Task GetAllAsync_TableNameEmpty_ThrowsArgumentEx()
     {
         await Assert.ThrowsExactlyAsync<ArgumentException>(() => Context.GetAllAsync<TestTable>(""));
@@ -81,12 +75,6 @@ public sealed class OrmContextTests
 
     [TestMethod]
     public async Task GetAllAsync_CantCastColumnValueToPropertyType_ThrowsInvalidOperationEx()
-    {
-        
-    }
-
-    [TestMethod]
-    public async Task GetAllAsync_PropertyNameAndColumnNameDifferentCase_IgnoresCase()
     {
         
     }
