@@ -15,13 +15,19 @@ public sealed class OrmContextTests
     [TestInitialize]
     public async Task SetUp()
     {
-        Context = new OrmContext("Host=localhost;Port=5432;Database=testdb;Username=postgres;Password=password");
+        Context = new OrmContext("Host=abc;Port=5432;Database=gtx;Username=thk;Password=password");
     }
     
     [TestMethod]
-    public async Task GetAllAsync_SqlInjectionInTableName_ThrowsArgumentEx()
+    [DataRow("users; DROP TABLE users")]
+    [DataRow("users\"; DROP TABLE users; --")]
+    [DataRow("users' OR '1'='1")]
+    [DataRow("users--")]
+    [DataRow("public.users")]
+    public async Task GetAllAsync_SqlInjectionInTableName_ThrowsArgumentEx(string tableName)
     {
-        
+        await Assert.ThrowsExactlyAsync<ArgumentException>(
+            () => Context.GetAllAsync<TestTable>(tableName));
     }
 
     [TestMethod]
@@ -31,53 +37,52 @@ public sealed class OrmContextTests
     }
 
     [TestMethod]
-    public async Task GetAllAsync_TableNameEmpty_ThrowsArgumentEx()
+    [DataRow("")]
+    [DataRow("   ")]
+    public async Task GetAllAsync_TableNameEmpty_ThrowsArgumentEx(string tableName)
     {
-        await Assert.ThrowsExactlyAsync<ArgumentException>(() => Context.GetAllAsync<TestTable>(""));
-        await Assert.ThrowsExactlyAsync<ArgumentException>(() => Context.GetAllAsync<TestTable>("  "));
+        await Assert.ThrowsExactlyAsync<ArgumentException>(
+            () => Context.GetAllAsync<TestTable>(tableName));
     }
 
     [TestMethod]
     public async Task GetAllAsync_TableNameNull_ThrowsArgumentNullEx()
     {
-        await Assert.ThrowsExactlyAsync<ArgumentNullException>(() => Context.GetAllAsync<TestTable>(null));
+        var ex = await Assert.ThrowsExactlyAsync<ArgumentNullException>(
+            () => Context.GetAllAsync<TestTable>(null!));
+        Assert.AreEqual("tableName", ex.ParamName);
     }
 
     [TestMethod]
     public async Task GetAllAsync_TableNameEndsWithLineBreak_ThrowsArgumentEx()
     {
-        await Assert.ThrowsExactlyAsync<ArgumentException>(() => Context.GetAllAsync<TestTable>("TestTable\\n"));
+        await Assert.ThrowsExactlyAsync<ArgumentException>(() => Context.GetAllAsync<TestTable>("TestTable\n"));
     }
 
     [TestMethod]
-    public async Task GetAllAsync_ColumnCountGreaterThanPropertyCount_CorrectResult()
+    [DataRow("")]
+    [DataRow("   ")]
+    [DataRow("abc")]                                    
+    [DataRow("Hots=localhost;Database=orisdb")]          
+    [DataRow("Database=orisdb")]                         
+    [DataRow("Host=localhost")]                          
+    public void Constructor_InvalidConnectionString_ThrowsArgumentEx(string connectionString)
     {
-        
+        Assert.Throws<ArgumentException>(() => new OrmContext(connectionString));
     }
 
     [TestMethod]
-    public async Task GetAllAsync_ColumnForNotMappedPropertyMissing_CorrectResult()
+    public void Constructor_NullConnectionString_ThrowsArgumentNullEx()
     {
-        
+        Assert.ThrowsExactly<ArgumentNullException>(() => new OrmContext(null!));
     }
 
     [TestMethod]
-    public async Task GetAllAsync_ColumnForNotMappedPropertyFound_IgnoresColumn()
+    [DataRow("Host=localhost;Database=orisdb;Username=postgres;Password=1")]
+    [DataRow("Database=orisdb;Host=localhost")]                    
+    [DataRow("Server=localhost;DB=orisdb")]                        
+    public void Constructor_ValidConnectionString_DoesNotThrow(string connectionString)
     {
-        
+        _ = new OrmContext(connectionString);
     }
-
-    [TestMethod]
-    public async Task GetAllAsync_ColumnFoundForPropertyWithoutPublicSetter_ThrowsInvalidOperationEx()
-    {
-        
-    }
-
-    [TestMethod]
-    public async Task GetAllAsync_CantCastColumnValueToPropertyType_ThrowsInvalidOperationEx()
-    {
-        
-    }
-
-
 }

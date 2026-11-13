@@ -4,6 +4,5 @@ namespace MiniHttpServer.ORM.Tests.Entities;
 
 public class LongNameEntity
 {
-    public int id{get;set;}
-    public int name{get;set;}
+    public int Id{get;set;}
 }
