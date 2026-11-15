@@ -16,45 +16,100 @@ public partial class OrmContext(string connectionString) : IOrmContext
 
     public async Task<IReadOnlyList<T>> GetAllAsync<T>(string tableName, CancellationToken cancellationToken = default) where T : class, new()
     {
-        var properties = typeof(T).GetProperties();
         await using var connection = new NpgsqlConnection(ConnectionString);
         if (!Regex.IsMatch(tableName, @"^[A-Za-z_][A-Za-z0-9_]*\z"))
             throw new ArgumentException($"incorrect format of the table name: '{tableName}'");
         var command = new NpgsqlCommand($"SELECT * FROM \"{tableName}\"", connection);
-        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
-        var propertyToColumn = GetPropertyToColumnDictionary(properties, reader);
-        var a = reader.GetOrdinal("");
-        var list = new List<T>{};
-        if (!reader.HasRows)
-            return list;
-
-        while (await reader.ReadAsync(cancellationToken))
+        await connection.OpenAsync(cancellationToken);
+        NpgsqlDataReader? reader;
+        try
         {
-            var instance = Activator.CreateInstance<T>();
-            SetInstanceProperties(instance, reader, properties, propertyToColumn);
-            list.Add(instance);
+            reader = await command.ExecuteReaderAsync(cancellationToken);
         }
-        return list;
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UndefinedTable)
+        {
+            throw new ArgumentException($"The table doesn't exist: {ex.Message}");
+        }
+        await using (reader)
+        {
+            var propertyToColumn = GetPropertyToColumnDictionary<T>(reader);
+            var properties = propertyToColumn.Select(pair => pair.Key).ToArray();
+            var list = new List<T>{};
+            if (!reader.HasRows)
+                return list;
+
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                var instance = Activator.CreateInstance<T>();
+                SetInstanceProperties(instance, reader, properties, propertyToColumn);
+                list.Add(instance);
+            }
+            return list;
+        }
+    }
+
+    private async Task<NpgsqlCommand> GetCommandAllAsync<T>(string tableName)
+    {
+        var properties = typeof(T).GetProperties();
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        var command = new NpgsqlCommand($"SELECT * FROM \"{tableName}\"", connection);
+        return command;
     }
 
     private static void SetInstanceProperties(object? instance, NpgsqlDataReader? reader, 
-    PropertyInfo[]? properties, Dictionary<string, int>? propertyToColumn)
+    PropertyInfo[]? properties, Dictionary<PropertyInfo?, int>? propertyToColumn)
     {
         foreach (var property in properties)
         {
-            var value = reader.GetValue(propertyToColumn[property.Name]);
-            property.SetValue(instance, value);
+            if (property.IsDefined(typeof(NotMappedAttribute)))
+                continue;
+            if (property.GetSetMethod() == null && !property.IsDefined(typeof(NotMappedAttribute)))
+                throw new InvalidOperationException("No public set for mapped property");
+            var value = reader.GetValue(propertyToColumn[property]);
+            try
+            {
+                bool acceptsNull = new NullabilityInfoContext().Create(property).WriteState
+                   == NullabilityState.Nullable;
+                if (reader.IsDBNull(propertyToColumn[property]))
+                {
+                    bool propertyAcceptsNull = new NullabilityInfoContext().Create(property).WriteState
+                   == NullabilityState.Nullable;
+                    if (!propertyAcceptsNull)
+                        throw new InvalidOperationException($"Tried to assign null value no a non nullable property {property}");
+                    property.SetValue(instance, null);
+                }
+                else
+                {
+                    property.SetValue(instance, value);
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                throw new InvalidOperationException(ex.Message);
+            }
         }
     }
 
-    private static Dictionary<string, int> GetPropertyToColumnDictionary(PropertyInfo[]? properties, NpgsqlDataReader? reader)
+    private static Dictionary<PropertyInfo?, int> GetPropertyToColumnDictionary<T>(NpgsqlDataReader? reader)
     {
-        var dict = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var properties = typeof(T).GetProperties();
+        var dict = new Dictionary<PropertyInfo?, int>();
         foreach (var property in properties)
         {
-            var column = reader.GetOrdinal(property.Name);
-            dict[property.Name] = column;
+            int column;
+            try
+            {
+                if (property.IsDefined(typeof(NotMappedAttribute)))
+                    continue;
+                column = reader.GetOrdinal(property.Name);
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                throw new InvalidOperationException($"Column for property with public set wasn't found {ex.Message}");
+            }  
+            dict[property] = column;
         }
+
         return dict;
     }
 
