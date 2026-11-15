@@ -1,11 +1,10 @@
 using System;
 using System.Net;
-using HttpServer.Results;
-using Search_server;
-using HttpServer.Framework.Attributes;
-using HttpServer.Results;
+using MiniHttpServer.Framework.Results;
+using MiniHttpServer.Framework.Content;
+using MiniHttpServer.Framework.Attributes;
 
-namespace HttpServer.Framework;
+namespace MiniHttpServer.Framework.Controllers;
 
 public abstract class ControllerBase
 {

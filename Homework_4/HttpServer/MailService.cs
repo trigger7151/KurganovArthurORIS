@@ -1,9 +1,9 @@
 using MimeKit;
 using MailKit.Net.Smtp;
 using System.Threading.Tasks;
-using Search_server;
+using MiniHttpServer.Framework.Content;
 using MailKit.Security;
-namespace SocialApp.Services
+namespace HttpServer
 {
     public class EmailService
     {
@@ -14,7 +14,6 @@ namespace SocialApp.Services
             FromEmail = fromEmail;
             Password = password;
         }
-        // Доделать from.add,to.add, соединение с сервисом почты и аутентификацию
         public async Task SendEmailAsync(string email, string subject, string message, Stream stream)
         {
             var builder = new BodyBuilder();

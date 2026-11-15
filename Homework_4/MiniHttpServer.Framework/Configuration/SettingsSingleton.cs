@@ -1,7 +1,7 @@
-namespace HttpServer.Settings;
+namespace MiniHttpServer.Framework.Configuration;
 using System;
 using System.Text.Json;
-using JsonClasses;
+using MiniHttpServer.Framework.Content;
 
 
 public class ServerSettings
@@ -38,10 +38,10 @@ public class ServerSettings
         Prefixes = settingsObj.prefixes;
         ConnectionString = settingsObj.connectionString;
     }
-    private static Settings DeserializeSettings(string settingsPath)
+    private static SettingsModel DeserializeSettings(string settingsPath)
     {
         var settingsJson = File.ReadAllText(settingsPath);
-        return JsonSerializer.Deserialize<Settings>(settingsJson);
+        return JsonSerializer.Deserialize<SettingsModel>(settingsJson);
     }
     public static ServerSettings Instance 
     {

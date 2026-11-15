@@ -1,7 +1,7 @@
 using System;
 using System.Net;
-using Search_server;
-namespace HttpServer.Handlers;
+using MiniHttpServer.Framework.Content;
+namespace MiniHttpServer.Framework.Handlers;
 
 public interface IHandler
 {

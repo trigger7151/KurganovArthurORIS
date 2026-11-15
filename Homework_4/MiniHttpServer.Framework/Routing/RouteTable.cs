@@ -1,13 +1,12 @@
 using System;
 using System.Net;
 using System.Reflection;
-using MimeTypesSpace;
-using Search_server;
-using HttpServer.Controllers;
-using HttpServer.Results;
-using HttpServer.Framework.Attributes;
-using HttpServer.Framework;
-namespace HttpServer.Framework.Routing;
+using MiniHttpServer.Framework.Content;
+using MiniHttpServer.Framework.Content;
+using MiniHttpServer.Framework.Results;
+using MiniHttpServer.Framework.Attributes;
+using MiniHttpServer.Framework.Controllers;
+namespace MiniHttpServer.Framework.Routing;
 
 public class RouteEntry
 {
@@ -27,7 +26,7 @@ public static class RouteTable
     public static void MapRoutes()
     {
         // получаем все типы контроллеров
-        var controllers = Assembly.GetExecutingAssembly()
+        var controllers = Assembly.GetEntryAssembly()!
         .GetTypes()
         .Where(type => type.Namespace == "HttpServer.Controllers" 
         && type.Name.EndsWith("Controller") 

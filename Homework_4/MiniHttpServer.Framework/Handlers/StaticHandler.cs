@@ -1,15 +1,14 @@
 using System;
 using System.Net;
 using System.Reflection;
-using MimeTypesSpace;
-using Search_server;
-using HttpServer.Controllers;
-using HttpServer.Results;
-using HttpServer.Framework.Attributes;
-using HttpServer.Framework;
-using HttpServer.Framework.Routing;
-using HttpServer.Handlers;
-namespace HttpServer.Framework.Handlers;
+using MiniHttpServer.Framework.Content;
+using MiniHttpServer.Framework.Content;
+using MiniHttpServer.Framework.Results;
+using MiniHttpServer.Framework.Attributes;
+using MiniHttpServer.Framework.Controllers;
+using MiniHttpServer.Framework.Routing;
+using MiniHttpServer.Framework.Handlers;
+namespace MiniHttpServer.Framework.Handlers;
 
 public class StaticHandler: Handler
 {

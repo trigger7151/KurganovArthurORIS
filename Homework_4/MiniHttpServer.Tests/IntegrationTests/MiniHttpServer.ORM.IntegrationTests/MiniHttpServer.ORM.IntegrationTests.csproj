@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MiniHttpServer.ORM\MiniHttpServer.ORM.csproj" />
+    <ProjectReference Include="..\..\..\MiniHttpServer.ORM\MiniHttpServer.ORM.csproj" />
   </ItemGroup>
 
   <ItemGroup>

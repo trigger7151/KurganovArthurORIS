@@ -1,7 +1,7 @@
 using System;
 using System.Net;
-using MimeTypesSpace;
-namespace HttpServer.Results;
+using MiniHttpServer.Framework.Content;
+namespace MiniHttpServer.Framework.Results;
 // Для каждого нового класса интерфейса IResult необходимо добавлять 
 // новый метод, возвращающий экземпляр этого класса в ControllerBase. 
 // Пространство имен HttpServer.Controllers;

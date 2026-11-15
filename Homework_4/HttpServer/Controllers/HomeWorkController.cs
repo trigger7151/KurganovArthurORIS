@@ -1,16 +1,16 @@
 using System;
-using Search_server;
+using MiniHttpServer.Framework.Content;
 using System.Net;
 using System.Web;
-using HttpServer.Results;
-using SocialApp.Services;
-using JsonClasses;
+using MiniHttpServer.Framework.Content;
+using MiniHttpServer.Framework.Content;
 using System.Text.Json;
 using System.IO.Compression;
 using MimeKit;
 using Microsoft.CodeAnalysis;
-using HttpServer.Framework.Attributes;
-using HttpServer.Framework;
+using MiniHttpServer.Framework.Attributes;
+using MiniHttpServer.Framework.Controllers;
+using MiniHttpServer.Framework.Results;
 namespace HttpServer.Controllers;
 
 [Route("/home-work")]

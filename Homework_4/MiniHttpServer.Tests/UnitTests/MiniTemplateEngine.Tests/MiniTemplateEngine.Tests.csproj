@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MiniTemplateEngine\MiniTemplateEngine.csproj" />
+    <ProjectReference Include="..\..\..\MiniTemplateEngine\MiniTemplateEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

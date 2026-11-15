@@ -1,6 +1,6 @@
 using System;
 
-namespace MimeTypesSpace;
+namespace MiniHttpServer.Framework.Content;
 
 public static class MimeTypes
 {

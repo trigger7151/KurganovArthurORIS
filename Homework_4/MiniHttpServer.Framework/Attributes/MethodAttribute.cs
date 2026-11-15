@@ -1,6 +1,6 @@
 using System;
 
-namespace HttpServer.Framework.Attributes;
+namespace MiniHttpServer.Framework.Attributes;
 
 public class MethodAttribute: Attribute
 {

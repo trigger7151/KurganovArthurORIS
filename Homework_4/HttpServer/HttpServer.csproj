@@ -22,4 +22,8 @@
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MiniHttpServer.Framework\MiniHttpServer.Framework.csproj" />
+  </ItemGroup>
+
 </Project>
