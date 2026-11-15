@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/MiniHttpServer.IntegrationTests/">
+    <Project Path="MiniHttpServer.IntegrationTests/MiniHttpServer.ORM.IntegrationTests/MiniHttpServer.ORM.IntegrationTests.csproj" />
+  </Folder>
   <Project Path="HttpServer.Tests/HttpServer.Tests.csproj" />
   <Project Path="HttpServer/HttpServer.csproj" />
   <Project Path="MiniHttpServer.ORM.Tests/MiniHttpServer.ORM.Tests.csproj" />

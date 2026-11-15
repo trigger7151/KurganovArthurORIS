@@ -8,7 +8,7 @@ namespace MiniHttpServer.ORM.Tests;
 [DoNotParallelize]
 public class OrmContextIntegrationTests
 {
-    private const string ConnectionString = "Host=localhost;Port=5432;Database=OrisTestdb;Username=OrisTestUser;Password=bwydf175";
+    private const string ConnectionString = "Host=localhost;Port=5432;Database=OrisTestdb;Username=OrisTestUser;Password=password";
     private const string fewerPropertiesTable = "fewerproperties";
     private const string hasColumnForNotMapped = "hascolumnfornotmapped";
     private const string incompatiblePropertyAndColumnType = "incompatiblepropertyandcolumntype";

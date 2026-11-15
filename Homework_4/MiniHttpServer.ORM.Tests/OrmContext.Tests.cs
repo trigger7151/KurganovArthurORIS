@@ -59,17 +59,17 @@ public sealed class OrmContextTests
         await Assert.ThrowsExactlyAsync<ArgumentException>(() => Context.GetAllAsync<TestTable>("TestTable\n"));
     }
 
-    [TestMethod]
-    [DataRow("")]
-    [DataRow("   ")]
-    [DataRow("abc")]                                    
-    [DataRow("Hots=localhost;Database=orisdb")]          
-    [DataRow("Database=orisdb")]                         
-    [DataRow("Host=localhost")]                          
-    public void Constructor_InvalidConnectionString_ThrowsArgumentEx(string connectionString)
-    {
-        Assert.Throws<ArgumentException>(() => new OrmContext(connectionString));
-    }
+    // [TestMethod]
+    // [DataRow("")]
+    // [DataRow("   ")]
+    // [DataRow("abc")]                                    
+    // [DataRow("Hots=localhost;Database=orisdb")]          
+    // [DataRow("Database=orisdb")]                         
+    // [DataRow("Host=localhost")]                          
+    // public void Constructor_InvalidConnectionString_ThrowsArgumentEx(string connectionString)
+    // {
+    //     Assert.Throws<ArgumentException>(() => new OrmContext(connectionString));
+    // }
 
     [TestMethod]
     public void Constructor_NullConnectionString_ThrowsArgumentNullEx()

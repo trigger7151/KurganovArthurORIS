@@ -3,22 +3,44 @@ using System.Data;
 using System.Text.RegularExpressions;
 using Npgsql;
 using System.Reflection;
+using System.Text;
 namespace MiniHttpServer.ORM;
 
-public partial class OrmContext(string connectionString) : IOrmContext
+public partial class OrmContext : IOrmContext
 {
-    private string ConnectionString { get; set; } = connectionString;
+    private string ConnectionString { get; set; }
+
+    public OrmContext(string connectionString)
+    {
+        ArgumentNullException.ThrowIfNull(connectionString);
+        ConnectionString = connectionString;
+    }
     
     public async Task<int> DeleteAsync(string tableName, int id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        await HandleTableNameExceptionsAsync(tableName);
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        await using var command = new NpgsqlCommand($"delete FROM \"{tableName}\" where Id = @id", connection);
+        command.Parameters.AddWithValue("@id", id);
+        await connection.OpenAsync(cancellationToken);
+        try
+        {
+            return await command.ExecuteNonQueryAsync(cancellationToken);
+        }
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UndefinedTable)
+        {
+            throw new ArgumentException($"Table '{tableName}' doesn't exist.", nameof(tableName), ex);
+        }
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UndefinedColumn)
+        {
+            throw new InvalidOperationException($"No column id in '{tableName}' table.", ex);
+        }
     }
 
     public async Task<IReadOnlyList<T>> GetAllAsync<T>(string tableName, CancellationToken cancellationToken = default) where T : class, new()
     {
+        await HandleTableNameExceptionsAsync(tableName);
         await using var connection = new NpgsqlConnection(ConnectionString);
-        if (!Regex.IsMatch(tableName, @"^[A-Za-z_][A-Za-z0-9_]*\z"))
-            throw new ArgumentException($"incorrect format of the table name: '{tableName}'");
         var command = new NpgsqlCommand($"SELECT * FROM \"{tableName}\"", connection);
         await connection.OpenAsync(cancellationToken);
         NpgsqlDataReader? reader;
@@ -48,14 +70,7 @@ public partial class OrmContext(string connectionString) : IOrmContext
         }
     }
 
-    private async Task<NpgsqlCommand> GetCommandAllAsync<T>(string tableName)
-    {
-        var properties = typeof(T).GetProperties();
-        await using var connection = new NpgsqlConnection(ConnectionString);
-        var command = new NpgsqlCommand($"SELECT * FROM \"{tableName}\"", connection);
-        return command;
-    }
-
+    #region вспомогательные методы GetAllAsync()
     private static void SetInstanceProperties(object? instance, NpgsqlDataReader? reader, 
     PropertyInfo[]? properties, Dictionary<PropertyInfo?, int>? propertyToColumn)
     {
@@ -92,15 +107,14 @@ public partial class OrmContext(string connectionString) : IOrmContext
 
     private static Dictionary<PropertyInfo?, int> GetPropertyToColumnDictionary<T>(NpgsqlDataReader? reader)
     {
-        var properties = typeof(T).GetProperties();
+        var properties = typeof(T).GetProperties()
+        .Where(property => !property.IsDefined(typeof(NotMappedAttribute)));
         var dict = new Dictionary<PropertyInfo?, int>();
         foreach (var property in properties)
         {
             int column;
             try
             {
-                if (property.IsDefined(typeof(NotMappedAttribute)))
-                    continue;
                 column = reader.GetOrdinal(property.Name);
             }
             catch (IndexOutOfRangeException ex)
@@ -113,13 +127,139 @@ public partial class OrmContext(string connectionString) : IOrmContext
         return dict;
     }
 
+    #endregion
+    private static async Task HandleTableNameExceptionsAsync(string tableName)
+    {
+        ArgumentNullException.ThrowIfNull(tableName);
+        if (!Regex.IsMatch(tableName, @"^[A-Za-z_][A-Za-z0-9_]*\z"))
+            throw new ArgumentException($"incorrect format of the table name: '{tableName}'");
+        if (tableName.Length > 63)
+            throw new ArgumentException($"table name {tableName} exceeds maximum length");
+    }
+
     public async Task<int> InsertAsync<T>(string tableName, T entity, CancellationToken cancellationToken = default) where T : class
     {
-        throw new NotImplementedException();
+        await HandleTableNameExceptionsAsync(tableName);
+        ArgumentNullException.ThrowIfNull(entity);
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        await connection.OpenAsync(cancellationToken);
+
+        var tableColumns = await GetTableColumnsAsync(connection, tableName, cancellationToken);
+        var propertyToColumn = GetPropertyToColumnPairs<T>(tableColumns, tableName);
+
+        await using var command = new NpgsqlCommand { Connection = connection };
+        var columns = new StringBuilder();
+        var values = new StringBuilder();
+        foreach (var (property, column) in propertyToColumn)
+        {
+            command.Parameters.AddWithValue($"@{property.Name}", property.GetValue(entity) ?? DBNull.Value);
+            columns.Append($"\"{column}\", ");
+            values.Append($"@{property.Name}, ");
+        }
+
+        if (columns.Length == 0)
+        {
+            command.CommandText = $"insert into \"{tableName}\" default values";
+        }
+        else
+        {
+            columns.Length -= 2;
+            values.Length -= 2;
+            command.CommandText = $"insert into \"{tableName}\" ({columns}) values ({values})";
+        }
+
+        return await ExecuteWriteCommandAsync(command, cancellationToken);
     }
 
     public async Task<int> UpdateAsync<T>(string tableName, int id, T entity, CancellationToken cancellationToken = default) where T : class
     {
-        throw new NotImplementedException();
+        await HandleTableNameExceptionsAsync(tableName);
+        ArgumentNullException.ThrowIfNull(entity);
+        await using var connection = new NpgsqlConnection(ConnectionString);
+        await connection.OpenAsync(cancellationToken);
+
+        var tableColumns = await GetTableColumnsAsync(connection, tableName, cancellationToken);
+        if (!tableColumns.TryGetValue("Id", out var idColumn))
+            throw new InvalidOperationException($"No column id in '{tableName}' table.");
+        var propertyToColumn = GetPropertyToColumnPairs<T>(tableColumns, tableName);
+
+        await using var command = new NpgsqlCommand { Connection = connection };
+        var set = new StringBuilder();
+        foreach (var (property, column) in propertyToColumn)
+        {
+            command.Parameters.AddWithValue($"@{property.Name}", property.GetValue(entity) ?? DBNull.Value);
+            set.Append($"\"{column}\" = @{property.Name}, ");
+        }
+
+        if (set.Length == 0)
+            set.Append($"\"{idColumn}\" = \"{idColumn}\"");
+        else
+            set.Length -= 2;
+
+        command.Parameters.AddWithValue("@id", id);
+        command.CommandText = $"update \"{tableName}\" set {set} where \"{idColumn}\" = @id";
+
+        return await ExecuteWriteCommandAsync(command, cancellationToken);
     }
+
+    #region вспомогательные методы InsertAsync() и UpdateAsync()
+    private static async Task<Dictionary<string, string>> GetTableColumnsAsync(
+        NpgsqlConnection connection, string tableName, CancellationToken cancellationToken)
+    {
+        await using var command = new NpgsqlCommand($"select * from \"{tableName}\" where false", connection);
+        NpgsqlDataReader reader;
+        try
+        {
+            reader = await command.ExecuteReaderAsync(cancellationToken);
+        }
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UndefinedTable)
+        {
+            throw new ArgumentException($"Table '{tableName}' doesn't exist.", nameof(tableName), ex);
+        }
+
+        await using (reader)
+        {
+            var columns = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            for (var i = 0; i < reader.FieldCount; i++)
+                columns[reader.GetName(i)] = reader.GetName(i);
+            return columns;
+        }
+    }
+
+    private static List<(PropertyInfo Property, string Column)> GetPropertyToColumnPairs<T>(
+        Dictionary<string, string> tableColumns, string tableName)
+    {
+        var properties = typeof(T).GetProperties()
+            .Where(property => !property.IsDefined(typeof(NotMappedAttribute)))
+            .Where(property => !property.Name.Equals("Id", StringComparison.OrdinalIgnoreCase));
+
+        var pairs = new List<(PropertyInfo Property, string Column)>();
+        foreach (var property in properties)
+        {
+            if (!tableColumns.TryGetValue(property.Name, out var column))
+                throw new InvalidOperationException($"Column for mapped property '{property.Name}' wasn't found in table '{tableName}'");
+            if (property.GetGetMethod() == null)
+                throw new InvalidOperationException($"No public get for mapped property '{property.Name}'");
+            pairs.Add((property, column));
+        }
+
+        return pairs;
+    }
+
+    private static async Task<int> ExecuteWriteCommandAsync(NpgsqlCommand command, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await command.ExecuteNonQueryAsync(cancellationToken);
+        }
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.NotNullViolation)
+        {
+            throw new InvalidOperationException($"Tried to write null into a not null column '{ex.ColumnName}'", ex);
+        }
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.DatatypeMismatch)
+        {
+            throw new InvalidOperationException($"Property value can't be converted to the column type: {ex.MessageText}", ex);
+        }
+    }
+    #endregion
 }
