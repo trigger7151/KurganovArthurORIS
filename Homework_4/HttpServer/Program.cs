@@ -4,6 +4,7 @@ using System.Text.Json;
 using MiniHttpServer.Framework;
 using MiniHttpServer.Framework.Configuration;
 using MiniHttpServer.Framework.Handlers;
+using MiniHttpServer.Framework.Results;
 using MiniHttpServer.Framework.Routing;
 
 
@@ -36,8 +37,10 @@ public static class ServerService
     }
     private static IHandler GetPipeline()
     {
-        var pipeline = new StaticHandler();
-        pipeline.SetNext(new RouteHandler());
+        var pipeline = new ExceptionHandler();
+        pipeline.SetNext(new StaticHandler())       
+        .SetNext(new RouteHandler())        
+        .SetNext(new NotFoundHandler());    
         return pipeline;
     }
 }

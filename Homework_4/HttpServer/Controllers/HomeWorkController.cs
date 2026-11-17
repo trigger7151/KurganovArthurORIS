@@ -68,7 +68,7 @@ public class HomeWorkController: ControllerBase
 
     [Method("GET")]
     [Route("/Send")]
-    public async Task<IResult> ProcessHomeWorkSend()
+    public async Task<IHttpResult> ProcessHomeWorkSend()
     {
         var parameters = Context.Request.QueryString;
         var toEmail = parameters.GetValues("To").First();
@@ -83,7 +83,7 @@ public class HomeWorkController: ControllerBase
         var emailSevice = new EmailService(authInfo.Email, authInfo.Password);
         var stream = GetZipStream(GetSolutionDirectory());
         await emailSevice.SendEmailAsync(toEmail, "zip архив сервера", "", stream);
-        return ReturnStaticResult();
+        return Html("<html>Request sent</html>");
     }
 }
 

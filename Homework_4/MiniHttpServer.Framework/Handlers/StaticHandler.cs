@@ -16,47 +16,37 @@ public class StaticHandler: Handler
     {
         if (!(context.Request.HttpMethod == "GET"))
         {
-            await base.Next.HandleAsync(context, server, token);
+            await base.HandleAsync(context, server, token);
             return;
         }
-        var response = context.Response;
-        var request = context.Request;
-        byte[] buffer = new byte[0];
-        var localUrl = request.Url.LocalPath;
-        Console.WriteLine($"Относительный url {localUrl}");
-        var url = Path.Combine(AppContext.BaseDirectory + "static", localUrl.TrimStart('/'));
-        try
+        var userPath = context.Request.Url.LocalPath;
+        var staticRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "static"));
+        var fullFilePath   = Path.GetFullPath(Path.Combine(staticRoot, userPath.TrimStart('/')));
+        if (userPath == "/" && File.Exists(server.ResponsePath))
         {
-            Console.WriteLine("путь запроса " + url);
-            if(localUrl == "/")
-            {
-                buffer = await File.ReadAllBytesAsync($"{server.ResponsePath}", token);
-                response.ContentType = "text/html; charset=utf-8";
-                Console.WriteLine($"Стандартный адрес {server.ResponsePath}");
-            }
-            else
-            {
-                buffer = await File.ReadAllBytesAsync($"{url}", token);
-                response.ContentType = MimeTypes.GetMimeType(url);
-            }
-            response.StatusCode = (int)HttpStatusCode.OK;
-            response.ContentLength64 = buffer.Length;
-            using Stream output = response.OutputStream;
-            await output.WriteAsync(buffer, token);
+            await new StaticResult(server.ResponsePath).ExecuteAsync(context.Response, token);
+            return;
         }
-        catch (OperationCanceledException){}
-        catch (IOException)
+
+        if (!fullFilePath.StartsWith(staticRoot + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
         {
-            await base.Next.HandleAsync(context, server, token);
-            //response.StatusCode = (int)HttpStatusCode.NotFound;
-        } 
-        catch (System.UnauthorizedAccessException)
-        {
-            await base.Next.HandleAsync(context, server, token);
+            await Next.HandleAsync(context, server, token);
+            return;
         }
-        catch (Exception ex)
+        var fileExists = File.Exists(fullFilePath);
+        var directoryExists = Directory.Exists(fullFilePath);
+
+        if (directoryExists && File.Exists(fullFilePath + "/index.html"))
         {
-            Console.WriteLine($"Ошибка обработки запроса: {ex.Message}");
+            await new StaticResult(fullFilePath + "/index.html").ExecuteAsync(context.Response, token);
+        }
+        else if (fileExists)
+        {
+            await new StaticResult(fullFilePath).ExecuteAsync(context.Response, token);
+        }
+        else
+        {
+            await base.HandleAsync(context, server, token);
         }
     }
 }

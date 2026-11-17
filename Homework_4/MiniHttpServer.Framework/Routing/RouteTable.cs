@@ -44,7 +44,7 @@ public static class RouteTable
                 var methodPath = method.GetCustomAttribute<RouteAttribute>().Path;
                 var fullPath = "/" + $"{path.TrimEnd('/')}/{methodPath.TrimStart('/')}".Trim('/');
                 var routeEntry = new RouteEntry(controller, method);
-                Routes[(httpMethod, fullPath)] = routeEntry;
+                Routes[(httpMethod.ToUpperInvariant(), fullPath.ToLowerInvariant())] = routeEntry;
             }
         }
     }

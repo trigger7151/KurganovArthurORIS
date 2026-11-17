@@ -18,7 +18,7 @@ public class LoginController : ControllerBase
 {
     [Method("POST")]
     [Route("")]
-    public async Task<IResult> ProcessLoginPostAuth()
+    public async Task<IHttpResult> ProcessLoginPostAuth()
     {
         var request = base.Context.Request;
         var response = base.Context.Response;
@@ -38,16 +38,19 @@ public class LoginController : ControllerBase
         Console.WriteLine($"login={login}, password={password}, remember={remember}");
 
         var path = Path.Combine(AppContext.BaseDirectory + "static", "login/index.html");
-        var result = ReturnFileResult(path);
+        var loginHtml = await File.ReadAllTextAsync(path);
+        var result = Html(loginHtml);
         return result;
         
     }
+
     [Method("GET")]
     [Route("")]
-    public async Task<IResult> ProcessLoginGet()
+    public async Task<IHttpResult> ProcessLoginGet()
     {
         var path = Path.Combine(AppContext.BaseDirectory + "static", "login/index.html");
-        var result = ReturnFileResult(path);
+        var loginHtml = await File.ReadAllTextAsync(path);
+        var result = Html(loginHtml);
         return result;
     }
 }

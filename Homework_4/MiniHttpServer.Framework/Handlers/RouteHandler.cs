@@ -15,16 +15,20 @@ public class RouteHandler: Handler
 {
     public override async Task HandleAsync(HttpListenerContext context, Server server, CancellationToken token)
     {
-        var localUrl = context.Request.Url.AbsolutePath.Trim('/');
+        var localUrl = context.Request.Url.LocalPath.Trim('/').ToLowerInvariant();
         localUrl = string.IsNullOrEmpty(localUrl) ? "/" : "/" + localUrl;
         Console.WriteLine($"Относительный url {localUrl}");
-        
-        var routeEntry = RouteTable.Routes[(context.Request.HttpMethod, localUrl)];
+        // по пути находится объект RouteEntry. Объект хранит тип контроллера и method info для конкретного запроса по конкретному rest методу
+        if (!RouteTable.Routes.TryGetValue((context.Request.HttpMethod, localUrl), out var routeEntry))
+        {
+            await Next.HandleAsync(context, server, token);
+            return;
+        }
+        // создаем экземпляр этого контроллера
         var controller = (ControllerBase)Activator.CreateInstance(routeEntry.ControllerType);
-        controller.Context = context;
-        controller.Server = server;
-        controller.Token = token;
-        var result = await (Task<IResult>)routeEntry.Method.Invoke(controller, null);
-        await result.Execute(context);
+        controller.Initialize(context, server, token);
+        // вызываем метод для контроллера и пытаемся привести к Task<IResult>
+        var result = await (Task<IHttpResult>)routeEntry.Method.Invoke(controller, null);
+        await result.ExecuteAsync(context.Response, token);
     }
 }
