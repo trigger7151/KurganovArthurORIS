@@ -25,7 +25,7 @@ public class ExceptionHandler : Handler
     {
         try
         {
-            await new JsonResult(new { Success = false, Message = "Inner server error" }, 500)
+            await new JsonResult(new { Success = false, Message = "Internal server error" }, 500)
                 .ExecuteAsync(response, token);
         }
         catch

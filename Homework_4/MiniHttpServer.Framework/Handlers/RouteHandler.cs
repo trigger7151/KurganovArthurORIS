@@ -27,8 +27,19 @@ public class RouteHandler: Handler
         // создаем экземпляр этого контроллера
         var controller = (ControllerBase)Activator.CreateInstance(routeEntry.ControllerType);
         controller.Initialize(context, server, token);
-        // вызываем метод для контроллера и пытаемся привести к Task<IResult>
-        var result = await (Task<IHttpResult>)routeEntry.Method.Invoke(controller, null);
+        object?[] parameters;
+        try
+        {
+            parameters = await ParameterBinder.BindAsync(routeEntry.Method, context.Request);
+        }
+        catch (ParameterBindingException ex)
+        {
+            await new JsonResult(new { Success = false, Message = ex.Message }, 400)
+                .ExecuteAsync(context.Response, token);
+            return;
+        }
+        // вызываем метод для контроллера и пытаемся привести к Task<IHttpResult>
+        var result = await (Task<IHttpResult>)routeEntry.Method.Invoke(controller, parameters);
         await result.ExecuteAsync(context.Response, token);
     }
 }
