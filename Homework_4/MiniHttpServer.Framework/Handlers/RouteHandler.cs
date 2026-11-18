@@ -83,7 +83,7 @@ public class RouteHandler: Handler
         }
         catch (ParameterBindingException ex)
         {
-            await new JsonResult(new { Success = false, Message = ex.Message }, 400)
+            await new JsonResult(new { Success = false, Message = ex.Message }, ex.StatusCode)
                 .ExecuteAsync(context.Response, token);
             return;
         }
