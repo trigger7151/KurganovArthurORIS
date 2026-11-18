@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Globalization;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -359,7 +360,9 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
         return VariableRegex.Replace(text, match =>
         {
             var value = ResolvePath(ctx, match.Groups[1].Value);
-            return value?.ToString() ?? string.Empty;
+            // HTML-кодирование: <, >, &, " и ' становятся текстом, а не разметкой,
+            // поэтому данные из модели не могут внедрить на страницу теги или скрипты
+            return WebUtility.HtmlEncode(value?.ToString() ?? string.Empty);
         });
     }
 

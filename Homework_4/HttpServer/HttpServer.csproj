@@ -14,6 +14,7 @@
     <None Update="Settings\settings.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="static\**" CopyToOutputDirectory="PreserveNewest" />
     <None Update="AuthInfo.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Templates\**" CopyToOutputDirectory="PreserveNewest"/>
   </ItemGroup>
 
   <ItemGroup>

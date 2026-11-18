@@ -32,6 +32,43 @@ public sealed class MiniTemplateEngineTests
     }
 
     [TestMethod]
+    public void Variable_WithScriptTag_IsHtmlEncoded()
+    {
+        var result = renderer.RenderFromString("<p>${u.Name}</p>", new { Name = "<script>alert('xss')</script>" });
+        Assert.AreEqual("<p>&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;</p>", result);
+    }
+
+    [TestMethod]
+    public void Variable_InAttribute_QuotesAreHtmlEncoded()
+    {
+        var result = renderer.RenderFromString("<img alt=\"${u.Title}\">", new { Title = "\" onerror=\"alert(1)" });
+        Assert.AreEqual("<img alt=\"&quot; onerror=&quot;alert(1)\">", result);
+    }
+
+    [TestMethod]
+    public void Variable_WithAmpersand_IsHtmlEncoded()
+    {
+        var result = renderer.RenderFromString("${u.Name}", new { Name = "Tom & Jerry" });
+        Assert.AreEqual("Tom &amp; Jerry", result);
+    }
+
+    [TestMethod]
+    public void Foreach_ItemValues_AreHtmlEncoded()
+    {
+        var result = renderer.RenderFromString(
+            "$foreach(var t in u.Tags)<li>${t}</li>$endfor",
+            new { Tags = new[] { "<b>", "ok" } });
+        Assert.AreEqual("<li>&lt;b&gt;</li><li>ok</li>", result);
+    }
+
+    [TestMethod]
+    public void TemplateMarkup_IsNotEncoded_OnlyValues()
+    {
+        var result = renderer.RenderFromString("<h1 class=\"title\">${u.Name}</h1>", new { Name = "Вася" });
+        Assert.AreEqual("<h1 class=\"title\">Вася</h1>", result);
+    }
+
+    [TestMethod]
     public void SameVariableTwice()
     {
         var result = renderer.RenderFromString("${var.A} ${var.A}", new {A = "кофе помогает от альцгеймера"});

@@ -5,6 +5,7 @@ using MiniHttpServer.Framework;
 using MiniHttpServer.Framework.Configuration;
 using MiniHttpServer.Framework.Handlers;
 using MiniHttpServer.Framework.Results;
+using MiniHttpServer.Framework.Authentication;
 using MiniHttpServer.Framework.Routing;
 
 
@@ -13,13 +14,13 @@ public static class ServerService
     private static Server? Server{get;set;}
     private static bool IsStarted{get;set;}
     private static bool ListenConsole{get;set;}
-    public static async Task StartServer(bool listenConsole)
+    public static async Task StartServer(bool listenConsole, IUserSessionService sessionService)
     {
         if (IsStarted)
         {
             throw new Exception("Server already started");
         }
-        Build(listenConsole);
+        Build(listenConsole, sessionService);
         Server.Start();
         IsStarted = true;
         if (ListenConsole)
@@ -28,18 +29,18 @@ public static class ServerService
             await listener.ListenConsoleLoopAsync();
         }
     }
-    private static void Build(bool listenConsole)
+    private static void Build(bool listenConsole, IUserSessionService sessionService)
     {
         ListenConsole = true;
-        var pipeline = GetPipeline();
+        var pipeline = GetPipeline(sessionService);
         RouteTable.MapRoutes();
         Server = new Server(ServerSettings.Instance, pipeline);
     }
-    private static IHandler GetPipeline()
+    private static IHandler GetPipeline(IUserSessionService sessionService)
     {
         var pipeline = new ExceptionHandler();
         pipeline.SetNext(new StaticHandler())       
-        .SetNext(new RouteHandler())        
+        .SetNext(new RouteHandler(sessionService))        
         .SetNext(new NotFoundHandler());    
         return pipeline;
     }
@@ -104,6 +105,7 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        await ServerService.StartServer(true);
+        var sessionService = new UserSessionService();
+        await ServerService.StartServer(true, sessionService);
     }
 }

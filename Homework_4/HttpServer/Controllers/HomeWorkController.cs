@@ -1,15 +1,5 @@
-using System;
-using MiniHttpServer.Framework.Content;
-using System.Net;
-using System.Web;
-using MiniHttpServer.Framework.Content;
-using MiniHttpServer.Framework.Content;
 using System.Text.Json;
 using System.IO.Compression;
-using MimeKit;
-using Microsoft.CodeAnalysis;
-using MiniHttpServer.Framework.Attributes;
-using MiniHttpServer.Framework.Controllers;
 using MiniHttpServer.Framework.Results;
 namespace HttpServer.Controllers;
 

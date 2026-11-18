@@ -8,8 +8,6 @@ using System.Text.Json;
 using System.IO.Compression;
 using MimeKit;
 using Microsoft.CodeAnalysis;
-using MiniHttpServer.Framework.Attributes;
-using MiniHttpServer.Framework.Controllers;
 using MiniHttpServer.Framework.Results;
 namespace HttpServer.Controllers;
 

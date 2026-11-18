@@ -1,5 +1,3 @@
-using System;
-
 namespace MiniHttpServer.Framework.Authentication;
 
 /// <summary>
@@ -8,6 +6,13 @@ namespace MiniHttpServer.Framework.Authentication;
 /// </summary>
 public interface IUserSessionService
 {
+    /// <summary>
+    /// Время жизни сеанса без активности.
+    /// Используется и для срока действия Cookie,
+    /// чтобы Cookie и сеанс истекали одновременно.
+    /// </summary>
+    TimeSpan SessionLifetime { get; }
+
     /// <summary>
     /// Создаёт новый сеанс пользователя.
     /// </summary>
@@ -21,7 +26,7 @@ public interface IUserSessionService
 
     /// <summary>
     /// Получает идентификатор пользователя
-    /// по действующему сеансу.
+    /// по действующему сеансу и продлевает сеанс.
     /// </summary>
     /// <param name="sessionId">
     /// Идентификатор сеанса.
@@ -39,5 +44,13 @@ public interface IUserSessionService
     /// Идентификатор сеанса.
     /// </param>
     void RemoveSession(string? sessionId);
-}
 
+    /// <summary>
+    /// Завершает все сеансы пользователя
+    /// (например, после смены пароля).
+    /// </summary>
+    /// <param name="userId">
+    /// Идентификатор пользователя.
+    /// </param>
+    void RemoveUserSessions(int userId);
+}
