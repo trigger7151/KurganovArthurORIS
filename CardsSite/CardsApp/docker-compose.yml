@@ -1,3 +1,6 @@
+# Запуск: docker compose up --build   (из папки CardsApp)
+# Сайт: http://localhost:8080, админка: http://localhost:8080/admin
+
 services:
   db:
     image: postgres:16-alpine
@@ -31,7 +34,7 @@ services:
     volumes:
       - uploads:/app/static/uploads
     # Сервер читает команды из консоли (start | stop | restart | exit)
-    # и завершается, если ввод закрыт, поэтому консоль нужно держать открытой.
+    # и завершается, если ввод закрыт, поэтому консоль держим открытой.
     stdin_open: true
     tty: true
     restart: unless-stopped

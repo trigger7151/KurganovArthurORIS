@@ -100,7 +100,7 @@ public class ConeDetailsVm
     public List<SuperimpositionVm> Superimpositions { get; set; } = [];
     public string CurrentEffectText { get; set; } = "";
     public bool HasDescription { get; set; }
-    /// <summary>Очищенный HTML описания. Вставляется в страницу не шаблонизатором, а через слот raw (подробнее — в ViewResult).</summary>
+    /// <summary>Очищенный HTML описания. Вставляется в страницу не шаблонизатором, а через слот raw (см. ViewResult).</summary>
     public string DescriptionHtml { get; set; } = "";
 }
 

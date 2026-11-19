@@ -157,7 +157,7 @@ public class LightConeAdminService(
         {
             await cones.AddAsync(cone, ct);
             // ORM возвращает только число вставленных строк, поэтому Id новой записи
-            // приходится искать по уникальному названию.
+            // находим по уникальному названию.
             cone = (await cones.FindAsync(c => c.Name == name, ct)).Single();
         }
         else

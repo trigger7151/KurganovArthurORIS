@@ -1,3 +1,5 @@
+-- Файл в UTF-8: явно задаём кодировку, чтобы psql в консоли Windows (WIN1251/CP866)
+-- не испортил русский текст и не пропустил вставки.
 SET client_encoding = 'UTF8';
 
 -- Схема базы данных Light Cone Wiki (PostgreSQL).

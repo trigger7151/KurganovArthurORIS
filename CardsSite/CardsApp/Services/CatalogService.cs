@@ -110,7 +110,7 @@ public class CatalogService(
             Hp = s.Hp.ToString("#,0", StatFormat),
             Atk = s.Atk.ToString("#,0", StatFormat),
             Def = s.Def.ToString("#,0", StatFormat),
-            IsActive = i == levels.Count - 1, // по умолчанию нужно показать максимальный уровень
+            IsActive = i == levels.Count - 1, // по умолчанию показываем максимальный уровень
         }).ToList();
 
         var effectVms = effects.Select((s, i) => new SuperimpositionVm
