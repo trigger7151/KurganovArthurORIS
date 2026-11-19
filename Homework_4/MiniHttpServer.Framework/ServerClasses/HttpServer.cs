@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using MiniHttpServer.Framework.Configuration;
 using MiniHttpServer.Framework.Handlers;
-namespace MiniHttpServer.Framework;
+namespace MiniHttpServer.Framework.ServerClasses;
 
 public class Server
 {
