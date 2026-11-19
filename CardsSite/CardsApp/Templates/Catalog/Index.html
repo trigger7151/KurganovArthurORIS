@@ -1,0 +1,85 @@
+<main class="page catalog">
+    <div class="page-title">
+        <h1>Световые конусы</h1>
+        <p class="page-subtitle">Нажмите на карточку, чтобы открыть подробности.</p>
+    </div>
+
+    <form class="filters" id="catalog-filters" method="get" action="/" role="search">
+        <input type="hidden" name="rarity" value="${model.Rarity}">
+        <input type="hidden" name="path" value="${model.Path}">
+
+        <div class="filters__top">
+            <label class="search-field">
+                <img src="/icons/search.svg" width="18" height="18" alt="">
+                <span class="visually-hidden">Поиск по названию</span>
+                <input type="search" name="q" value="${model.Query}" maxlength="80" autocomplete="off"
+                       placeholder="Найти световой конус по названию" data-short-placeholder="Найти конус">
+            </label>
+            <label class="sort-field sort-field--desktop">
+                <span class="visually-hidden">Сортировка</span>
+                <span class="sort-field__label" data-sort-label>${model.SortLabel}</span>
+                <img src="/icons/chevron-down.svg" width="18" height="18" alt="">
+                <select name="sort" data-sort>
+                    $foreach(var opt in model.SortOptions)<option value="${opt.Value}" data-long="${opt.Label}" data-short="${opt.ShortLabel}" $if(opt.IsSelected)selected$endif>${opt.Label}</option>
+                    $endfor
+                </select>
+            </label>
+            <noscript><button class="button" type="submit">Найти</button></noscript>
+        </div>
+
+        <div class="filter-row">
+            <span class="filter-row__label">Редкость</span>
+            <div class="chips" data-filter="rarity">
+                $foreach(var chip in model.RarityChips)<a class="chip $if(chip.IsActive)chip--active$endif" href="${chip.Url}" data-value="${chip.Value}">${chip.Label}</a>
+                $endfor
+            </div>
+        </div>
+
+        <div class="filter-row">
+            <span class="filter-row__label">Путь</span>
+            <div class="chips" data-filter="path">
+                $foreach(var chip in model.PathChips)<a class="chip $if(chip.IsActive)chip--active$endif" href="${chip.Url}" data-value="${chip.Value}">${chip.Label}</a>
+                $endfor
+            </div>
+        </div>
+
+        <div class="filters__divider"></div>
+
+        <div class="filters__summary">
+            <p class="filters__count" aria-live="polite">
+                <span class="only-desktop" data-count-long>${model.CountText}</span>
+                <span class="only-mobile" data-count-short>${model.CountShort}</span>
+            </p>
+            <label class="sort-field sort-field--mobile">
+                <span class="visually-hidden">Сортировка</span>
+                <span class="sort-field__label" data-sort-label-short>${model.SortShortLabel}</span>
+                <img src="/icons/chevron-down.svg" width="18" height="18" alt="">
+                <select name="sort" data-sort disabled>
+                    $foreach(var opt in model.SortOptions)<option value="${opt.Value}" $if(opt.IsSelected)selected$endif>${opt.ShortLabel}</option>
+                    $endfor
+                </select>
+            </label>
+            <a class="filters__reset only-desktop $if(model.IsFiltered)$else is-hidden$endif" href="/" data-reset>Сбросить фильтры</a>
+        </div>
+    </form>
+
+    <div class="cone-grid" id="cone-grid">
+        $foreach(var cone in model.Items)
+        <a class="cone-card rarity-${cone.Rarity}" href="${cone.Url}">
+            <div class="cone-card__art">
+                $if(cone.HasImage)<img class="cone-card__img" src="${cone.ImageUrl}" alt="${cone.Name}" loading="lazy">
+                $else<img src="/icons/card-image.svg" width="28" height="28" alt=""><span class="art-size">902 × 1260</span>$endif
+            </div>
+            <div class="cone-card__bar"></div>
+            <div class="cone-card__info">
+                <p class="cone-card__name">${cone.Name}</p>
+                <p class="cone-card__meta"><span class="stars">${cone.Stars}</span><span>${cone.PathName}</span></p>
+            </div>
+        </a>
+        $endfor
+    </div>
+    <div class="empty-state $if(model.HasItems)is-hidden$endif" id="empty-state">
+        <p class="empty-state__title">Ничего не найдено</p>
+        <p>Попробуйте изменить запрос или <a href="/" data-reset>сбросить фильтры</a>.</p>
+    </div>
+</main>

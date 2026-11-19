@@ -1,0 +1,9 @@
+global using MiniHttpServer.Framework.ServerClasses;
+global using MiniHttpServer.Framework.Authentication;
+global using MiniHttpServer.ORM;
+global using CardsApp.Domain;
+global using CardsApp.Data;
+global using CardsApp.Data.Repositories;
+global using CardsApp.Services;
+global using CardsApp.Web.Infrastructure;
+global using CardsApp.Web.ViewModels;

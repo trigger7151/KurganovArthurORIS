@@ -1,0 +1,89 @@
+<main class="page cone-page rarity-${model.Rarity}">
+    <div class="cone-page__glow" aria-hidden="true"></div>
+
+    <nav class="breadcrumbs" aria-label="Навигация">
+        <a class="back-link" href="/">
+            <img src="/icons/arrow-left.svg" width="18" height="18" alt="">
+            <span>Все световые конусы</span>
+        </a>
+        <span class="breadcrumbs__current">/&nbsp;&nbsp;&nbsp;${model.Name}</span>
+    </nav>
+
+    <div class="cone-layout">
+        <div class="cone-layout__art">
+            <div class="cone-art">
+                $if(model.HasImage)<img src="${model.ImageUrl}" alt="Арт: ${model.Name}">
+                $else
+                <img src="/icons/art-image.svg" width="40" height="40" alt="">
+                <span class="cone-art__caption">Арт светового конуса</span>
+                <span class="art-size">902 × 1260</span>
+                $endif
+            </div>
+            $if(model.HasImage)
+            <a class="open-art" href="${model.ImageUrl}" target="_blank" rel="noopener">
+                <img src="/icons/expand.svg" width="16" height="16" alt="">
+                <span>Открыть арт в полном размере</span>
+            </a>
+            $else
+            <span class="open-art is-disabled" aria-disabled="true">
+                <img src="/icons/expand.svg" width="16" height="16" alt="">
+                <span>Арт ещё не загружен</span>
+            </span>
+            $endif
+        </div>
+
+        <div class="cone-layout__info">
+            <div class="cone-title">
+                <div class="cone-title__badges">
+                    <span class="rarity-badge">${model.Stars}</span>
+                    <span class="path-badge">
+                        <img src="/icons/path.svg" width="16" height="16" alt="">
+                        <span>Путь: ${model.PathName}</span>
+                    </span>
+                </div>
+                <h1>${model.Name}</h1>
+            </div>
+
+            <section class="panel stats-panel" aria-labelledby="stats-title">
+                <div class="panel__head">
+                    <h2 id="stats-title">Характеристики</h2>
+                    $if(model.HasLevels)
+                    <div class="chips chips--compact" role="group" aria-label="Уровень">
+                        $foreach(var level in model.Levels)<button type="button" class="chip $if(level.IsActive)chip--active$endif" data-level
+                            data-hp="${level.Hp}" data-atk="${level.Atk}" data-def="${level.Def}" aria-pressed="$if(level.IsActive)true$elsefalse$endif">${level.Label}</button>
+                        $endfor
+                    </div>
+                    $endif
+                </div>
+                <div class="stat-rows">
+                    <div class="stat-row"><span class="stat-row__name"><img src="/icons/stat-marker.svg" width="8" height="8" alt="">Базовое HP</span><span class="stat-row__value" data-stat="hp">${model.CurrentStats.Hp}</span></div>
+                    <div class="stat-row"><span class="stat-row__name"><img src="/icons/stat-marker.svg" width="8" height="8" alt="">Базовая атака</span><span class="stat-row__value" data-stat="atk">${model.CurrentStats.Atk}</span></div>
+                    <div class="stat-row"><span class="stat-row__name"><img src="/icons/stat-marker.svg" width="8" height="8" alt="">Базовая защита</span><span class="stat-row__value" data-stat="def">${model.CurrentStats.Def}</span></div>
+                </div>
+            </section>
+
+            <section class="panel effect-panel" aria-labelledby="effect-title">
+                <div class="panel__head">
+                    <h2 id="effect-title">Эффект</h2>
+                    $if(model.HasEffects)
+                    <div class="tabs" role="tablist" aria-label="Уровень наложения">
+                        $foreach(var s in model.Superimpositions)<button type="button" role="tab" class="tab $if(s.IsActive)tab--active$endif" data-superimposition
+                            data-text="${s.Text}" aria-selected="$if(s.IsActive)true$elsefalse$endif">${s.Label}</button>
+                        $endfor
+                    </div>
+                    $endif
+                </div>
+                <p class="effect-panel__name">${model.EffectName}</p>
+                <p class="effect-panel__text" data-effect-text aria-live="polite">$if(model.HasEffects)${model.CurrentEffectText}$else Описание эффекта пока не добавлено.$endif</p>
+                <p class="effect-panel__hint">Уровень наложения повышается, если экипировать копию этого же светового конуса.</p>
+            </section>
+
+            $if(model.HasDescription)
+            <section class="panel description-panel" aria-labelledby="description-title">
+                <div class="panel__head"><h2 id="description-title">Описание</h2></div>
+                <blockquote class="quote rich-text"><!--raw:description--></blockquote>
+            </section>
+            $endif
+        </div>
+    </div>
+</main>

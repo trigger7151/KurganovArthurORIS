@@ -1,0 +1,131 @@
+<main class="page admin-page">
+    <div class="admin-head">
+        <div>
+            <a class="back-link" href="/admin"><img src="/icons/arrow-left.svg" width="18" height="18" alt=""><span>К списку конусов</span></a>
+            <h1>${form.PageTitle}</h1>
+        </div>
+        $if(form.IsNew)$else<a class="button" href="${form.ViewUrl}" target="_blank">Открыть на сайте ↗</a>$endif
+    </div>
+
+    $if(form.HasError)<div class="alert alert--error" role="alert">${form.Error}</div>$endif
+
+    <form class="admin-form" method="post" action="/admin/cone" novalidate data-validate data-cone-form>
+        <input type="hidden" name="id" value="${form.Id}">
+
+        <section class="panel form-section">
+            <h2>Основное</h2>
+            <div class="form-grid">
+                <div class="field field--wide $if(form.Name.HasError)field--error$endif">
+                    <label for="name">${form.Name.Label}</label>
+                    <input id="name" name="name" value="${form.Name.Value}" maxlength="80" required
+                           data-rule="title" data-min="2" data-label="${form.Name.Label}" data-counter data-name-check>
+                    <p class="field__hint" data-name-status></p>
+                    <p class="field__error" data-error>${form.Name.Error}</p>
+                </div>
+                <div class="field $if(form.Rarity.HasError)field--error$endif">
+                    <label for="rarity">${form.Rarity.Label}</label>
+                    <select id="rarity" name="rarity" required data-label="${form.Rarity.Label}">
+                        <option value="">Выберите…</option>
+                        $foreach(var opt in form.RarityOptions)<option value="${opt.Value}" $if(opt.IsSelected)selected$endif>${opt.Label}</option>
+                        $endfor
+                    </select>
+                    <p class="field__error" data-error>${form.Rarity.Error}</p>
+                </div>
+                <div class="field $if(form.PathId.HasError)field--error$endif">
+                    <label for="pathId">${form.PathId.Label}</label>
+                    <select id="pathId" name="pathId" required data-label="${form.PathId.Label}">
+                        <option value="">Выберите…</option>
+                        $foreach(var opt in form.PathOptions)<option value="${opt.Value}" $if(opt.IsSelected)selected$endif>${opt.Label}</option>
+                        $endfor
+                    </select>
+                    <p class="field__error" data-error>${form.PathId.Error}</p>
+                </div>
+                <div class="field field--wide $if(form.EffectName.HasError)field--error$endif">
+                    <label for="effectName">${form.EffectName.Label}</label>
+                    <input id="effectName" name="effectName" value="${form.EffectName.Value}" maxlength="60" required
+                           data-rule="title" data-min="2" data-label="${form.EffectName.Label}" data-counter>
+                    <p class="field__error" data-error>${form.EffectName.Error}</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel form-section">
+            <h2>Арт</h2>
+            <div class="art-editor">
+                <div class="art-editor__preview" data-art-preview>
+                    $if(form.ImageUrl.Value == "")<span class="muted small">Нет арта</span>$else<img src="${form.ImageUrl.Value}" alt="">$endif
+                </div>
+                <div class="art-editor__fields">
+                    <div class="field $if(form.ImageUrl.HasError)field--error$endif">
+                        <label for="imageUrl">${form.ImageUrl.Label}</label>
+                        <input id="imageUrl" name="imageUrl" value="${form.ImageUrl.Value}" maxlength="300"
+                               placeholder="https://… или загрузите файл" data-rule="imageUrl" data-label="${form.ImageUrl.Label}">
+                        <p class="field__hint">PNG, JPEG или WebP до 5 МБ. Лучше всего — 902×1260.</p>
+                        <p class="field__error" data-error>${form.ImageUrl.Error}</p>
+                    </div>
+                    <div class="art-editor__actions">
+                        <label class="button">
+                            <input type="file" accept="image/png,image/jpeg,image/webp" data-upload hidden>
+                            Загрузить файл…
+                        </label>
+                        <button class="button" type="button" data-clear-image>Убрать арт</button>
+                        <span class="muted small" data-upload-status aria-live="polite"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel form-section">
+            <h2>Характеристики</h2>
+            <div class="stats-editor">
+                <p class="stats-editor__level">Ур. 1</p>
+                $foreach(var f in form.Stats1)
+                <div class="field $if(f.HasError)field--error$endif">
+                    <label for="${f.Name}">${f.Label}</label>
+                    <input id="${f.Name}" name="${f.Name}" value="${f.Value}" inputmode="numeric" maxlength="5" required
+                           data-rule="stat" data-label="${f.Label} (Ур. 1)">
+                    <p class="field__error" data-error>${f.Error}</p>
+                </div>
+                $endfor
+                <p class="stats-editor__level">Ур. 80</p>
+                $foreach(var f in form.Stats80)
+                <div class="field $if(f.HasError)field--error$endif">
+                    <label for="${f.Name}">${f.Label}</label>
+                    <input id="${f.Name}" name="${f.Name}" value="${f.Value}" inputmode="numeric" maxlength="5" required
+                           data-rule="stat" data-label="${f.Label} (Ур. 80)">
+                    <p class="field__error" data-error>${f.Error}</p>
+                </div>
+                $endfor
+            </div>
+        </section>
+
+        <section class="panel form-section">
+            <h2>Эффект по уровням наложения</h2>
+            <p class="muted small">Текст эффекта для S1–S5. Посетитель переключает уровни вкладками на странице конуса.</p>
+            $foreach(var f in form.Effects)
+            <div class="field $if(f.HasError)field--error$endif">
+                <label for="${f.Name}">${f.Label}</label>
+                <textarea id="${f.Name}" name="${f.Name}" rows="3" maxlength="600" required data-min="10"
+                          data-label="Эффект ${f.Label}" data-counter>${f.Value}</textarea>
+                <p class="field__error" data-error>${f.Error}</p>
+            </div>
+            $endfor
+            <button class="button button--small" type="button" data-copy-s1>Скопировать S1 во все уровни</button>
+        </section>
+
+        <section class="panel form-section">
+            <h2>Описание</h2>
+            <div class="field $if(form.Description.HasError)field--error$endif">
+                <div class="editor" data-editor></div>
+                <input type="hidden" name="description" value="${form.Description.Value}" data-editor-input>
+                <p class="field__hint">Можно выделять текст и добавлять ссылки. Скрипты и стили на сайт не попадут.</p>
+                <p class="field__error" data-error>${form.Description.Error}</p>
+            </div>
+        </section>
+
+        <div class="form-actions">
+            <button class="button button--primary" type="submit">Сохранить</button>
+            <a class="button" href="/admin">Отмена</a>
+        </div>
+    </form>
+</main>

@@ -7,4 +7,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MiniHttpServer.Framework\MiniHttpServer.Framework.csproj" />
+    <ProjectReference Include="..\MiniHttpServer.ORM\MiniHttpServer.ORM.csproj" />
+  </ItemGroup>
+
+  <!-- Шаблоны, статика и настройки копируются рядом с exe:
+       фреймворк ищет их относительно AppContext.BaseDirectory. -->
+  <ItemGroup>
+    <None Include="Templates\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="static\**\*" Exclude="static\uploads\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="static\uploads\.gitkeep" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Settings\settings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

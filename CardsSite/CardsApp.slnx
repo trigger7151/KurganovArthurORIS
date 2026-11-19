@@ -1,3 +1,6 @@
 <Solution>
   <Project Path="CardsApp/CardsApp.csproj" />
+  <Project Path="MiniHttpServer.Framework/MiniHttpServer.Framework.csproj" />
+  <Project Path="MiniHttpServer.ORM/MiniHttpServer.ORM.csproj" />
+  <Project Path="MiniTemplateEngine/MiniTemplateEngine.csproj" />
 </Solution>

@@ -1,0 +1,27 @@
+<main class="page admin-page login-page">
+    <form class="panel login-panel" method="post" action="/admin/login" novalidate data-validate>
+        <h1>Вход в админку</h1>
+        <p class="muted">Управление каталогом световых конусов.</p>
+
+        $if(model.HasError)<div class="alert alert--error" role="alert">${model.Error}</div>$endif
+
+        <input type="hidden" name="returnUrl" value="${model.ReturnUrl}">
+
+        <div class="field $if(model.Login.HasError)field--error$endif">
+            <label for="login">${model.Login.Label}</label>
+            <input id="login" name="login" value="${model.Login.Value}" autocomplete="username" autofocus
+                   maxlength="20" required data-rule="login" data-label="${model.Login.Label}">
+            <p class="field__error" data-error>${model.Login.Error}</p>
+        </div>
+
+        <div class="field $if(model.Password.HasError)field--error$endif">
+            <label for="password">${model.Password.Label}</label>
+            <input id="password" name="password" type="password" autocomplete="current-password"
+                   maxlength="64" required data-label="${model.Password.Label}">
+            <p class="field__error" data-error>${model.Password.Error}</p>
+        </div>
+
+        <button class="button button--primary button--wide" type="submit">Войти</button>
+        <a class="muted-link" href="/">← Вернуться на сайт</a>
+    </form>
+</main>

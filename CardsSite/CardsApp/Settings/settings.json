@@ -1,0 +1,6 @@
+{
+  "responsePath": "static/index.html",
+  "responsePathType": "relative",
+  "prefixes": [ "http://localhost:8080/" ],
+  "connectionString": "Host=localhost;Port=5432;Database=lightcones;Username=postgres;Password=postgres"
+}

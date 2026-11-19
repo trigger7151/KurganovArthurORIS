@@ -1,0 +1,4 @@
+bin/
+obj/
+static/uploads/*
+!static/uploads/.gitkeep
