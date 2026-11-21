@@ -10,8 +10,14 @@ using MiniHttpServer.Framework.Routing;
 using MiniHttpServer.Framework.Handlers;
 namespace MiniHttpServer.Framework.Handlers;
 
+/// <summary>
+/// Обработчик статических файлов из каталога static. Путь URL отсчитывается от static;
+/// для каталога отдаётся его index.html, а <c>/</c> — страница из настроек.
+/// Пути за пределами static не обслуживаются. Если файла нет, запрос передаётся дальше.
+/// </summary>
 public class StaticHandler: Handler
 {
+    /// <inheritdoc />
     public override async Task HandleAsync(HttpListenerContext context, Server server, CancellationToken token)
     {
         if (!(context.Request.HttpMethod == "GET"))

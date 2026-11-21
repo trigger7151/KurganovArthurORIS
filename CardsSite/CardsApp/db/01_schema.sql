@@ -1,5 +1,4 @@
--- Файл в UTF-8: явно задаём кодировку, чтобы psql в консоли Windows (WIN1251/CP866)
--- не испортил русский текст и не пропустил вставки.
+-- Файл в UTF-8: кодировка задаётся явно, чтобы psql в консоли Windows (WIN1251/CP866)
 SET client_encoding = 'UTF8';
 
 -- Схема базы данных Light Cone Wiki (PostgreSQL).
@@ -58,7 +57,7 @@ CREATE TABLE users
     login        VARCHAR(20)  NOT NULL UNIQUE,
     passwordhash VARCHAR(200) NOT NULL,
     displayname  VARCHAR(60)  NOT NULL,
-    role         VARCHAR(10)  NOT NULL CHECK (role IN ('admin', 'editor'))
+    role         VARCHAR(10)  NOT NULL CHECK (role IN ('admin'))
 );
 
 CREATE INDEX ix_lightcones_pathid ON lightcones (pathid);

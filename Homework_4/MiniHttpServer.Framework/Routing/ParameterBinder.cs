@@ -13,14 +13,28 @@ namespace MiniHttpServer.Framework.Routing;
 /// </summary>
 public class ParameterBindingException : Exception
 {
+    /// <summary>
+    /// HTTP-статус ответа клиенту.
+    /// </summary>
     public int StatusCode { get; }
 
+    /// <summary>
+    /// Создаёт исключение привязки.
+    /// </summary>
+    /// <param name="message">Описание ошибки для клиента.</param>
+    /// <param name="statusCode">HTTP-статус ответа.</param>
     public ParameterBindingException(string message, int statusCode = 400)
         : base(message)
     {
         StatusCode = statusCode;
     }
 
+    /// <summary>
+    /// Создаёт исключение привязки с исходной причиной.
+    /// </summary>
+    /// <param name="message">Описание ошибки для клиента.</param>
+    /// <param name="innerException">Исходное исключение.</param>
+    /// <param name="statusCode">HTTP-статус ответа.</param>
     public ParameterBindingException(string message, Exception innerException, int statusCode = 400)
         : base(message, innerException)
     {
@@ -33,11 +47,17 @@ public class ParameterBindingException : Exception
 /// </summary>
 public static class ParameterBinder
 {
+    /// <summary>
+    /// Content-Type обычной HTML-формы.
+    /// </summary>
     private const string FormContentType = "application/x-www-form-urlencoded";
+    /// <summary>
+    /// Content-Type тела в формате JSON.
+    /// </summary>
     private const string JsonContentType = "application/json";
 
     /// <summary>
-    /// Максимальный размер тела формы или JSON, который читается в память (1 МБ).
+    /// Максимальный размер тела формы или JSON, который читается в память (15 МБ).
     /// </summary>
     public const long MaxBodySize = 15*(1024 * 1024);
 
@@ -104,6 +124,9 @@ public static class ParameterBinder
         return request.ContentEncoding.GetString(buffer.GetBuffer(), 0, (int)buffer.Length);
     }
 
+    /// <summary>
+    /// Создаёт исключение «тело запроса слишком большое» (413).
+    /// </summary>
     private static ParameterBindingException BodyTooLarge()
         => new($"Тело запроса больше допустимого размера ({MaxBodySize / 1024} КБ).", 413);
 
@@ -196,6 +219,13 @@ public static class ParameterBinder
         }
     }
 
+    /// <summary>
+    /// Проверяет, что Content-Type запроса начинается с указанного типа
+    /// (после него может идти, например, <c>; charset=utf-8</c>).
+    /// </summary>
+    /// <param name="request">HTTP-запрос.</param>
+    /// <param name="contentType">Ожидаемый тип.</param>
+    /// <returns>true, если тип совпадает.</returns>
     private static bool HasContentType(HttpListenerRequest request, string contentType)
         => request.ContentType?.StartsWith(contentType, StringComparison.OrdinalIgnoreCase) == true;
 }

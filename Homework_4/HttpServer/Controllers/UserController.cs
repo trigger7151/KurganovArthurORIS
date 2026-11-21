@@ -1,10 +1,17 @@
 using System;
 namespace HttpServer.Controllers;
 
+/// <summary>
+/// Страницы пользователя.
+/// </summary>
 [Route("/user")]
 public class UserController : ControllerBase
 {
 
+    /// <summary>
+    /// GET /user/profile — личный кабинет. Доступен только с действующим сеансом (<see cref="AuthorizeAttribute"/>).
+    /// </summary>
+    /// <returns>Страница, построенная по шаблону <c>Templates/User/Profile.html</c>.</returns>
     [Route("/profile")]
     [Method("GET")]
     [Authorize]

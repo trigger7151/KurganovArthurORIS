@@ -38,7 +38,6 @@ public class AdminConesPageVm
     public List<AdminConeRowVm> Items { get; set; } = [];
     public string CountText { get; set; } = "";
     public bool HasItems => Items.Count > 0;
-    public bool CanDelete { get; set; }
     public string Notice { get; set; } = "";
     public bool HasNotice => Notice.Length > 0;
     public bool NoticeIsError { get; set; }

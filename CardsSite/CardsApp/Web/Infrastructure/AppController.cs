@@ -22,7 +22,7 @@ public abstract class AppController : ControllerBase
 
     protected IHttpResult View(string viewPath, object model, string title, int statusCode = 200,
         IReadOnlyDictionary<string, string>? raw = null, string[]? scripts = null, string bodyClass = "",
-        User? user = null, bool adminArea = false)
+        UserEntity? user = null, bool adminArea = false)
     {
         var layout = new LayoutVm
         {
@@ -31,7 +31,6 @@ public abstract class AppController : ControllerBase
             IsAdminArea = adminArea,
             IsSignedIn = user is not null,
             UserName = user?.DisplayName ?? "",
-            IsAdmin = user?.Role == UserRoles.Admin,
             Styles = adminArea ? ["/vendor/quill/quill.snow.css", "/css/site.css", "/css/admin.css"] : ["/css/site.css"],
             Scripts = (scripts ?? []).ToList(),
         };
@@ -40,7 +39,7 @@ public abstract class AppController : ControllerBase
 
     protected static IHttpResult Redirect(string url) => new RedirectResult(url);
 
-    protected IHttpResult MessagePage(int code, string title, string message, User? user = null, bool adminArea = false)
+    protected IHttpResult MessagePage(int code, string title, string message, UserEntity? user = null, bool adminArea = false)
         => View("Errors/Message.html", new MessagePageVm { Code = code.ToString(), Title = title, Message = message },
             title, code, user: user, adminArea: adminArea);
 
@@ -85,7 +84,7 @@ public abstract class AppController : ControllerBase
 
     protected string? SessionId => Request.Cookies[AuthenticationDefaults.SessionCookieName]?.Value;
 
-    protected Task<User?> GetCurrentUserAsync()
+    protected Task<UserEntity?> GetCurrentUserAsync()
         => Services.Auth.GetUserAsync(SessionService.GetUserId(SessionId), Ct);
 
     protected void SetSessionCookie(string sessionId)
@@ -108,15 +107,15 @@ public abstract class AppController : ControllerBase
 /// <summary>Базовый контроллер админки: вход обязателен, иначе — перенаправление на форму входа.</summary>
 public abstract class AdminAreaController : AppController
 {
-    protected IHttpResult AdminView(string viewPath, object model, string title, User user, int statusCode = 200,
+    protected IHttpResult AdminView(string viewPath, object model, string title, UserEntity user, int statusCode = 200,
         string[]? scripts = null)
         => View(viewPath, model, title, statusCode, scripts: scripts, user: user, adminArea: true, bodyClass: "admin");
 
     /// <summary>
     /// Выполняет действие от имени вошедшего пользователя.
-    /// Без входа — редирект на /admin/login; не хватает прав — страница 403.
+    /// Без входа — редирект на /admin/login; пользователь не администратор — страница 403.
     /// </summary>
-    protected Task<IHttpResult> AuthorizedAsync(Func<User, Task<IHttpResult>> action, bool adminOnly = false)
+    protected Task<IHttpResult> AuthorizedAsync(Func<UserEntity, Task<IHttpResult>> action)
         => SafeAsync(async () =>
         {
             var user = await GetCurrentUserAsync();
@@ -125,10 +124,14 @@ public abstract class AdminAreaController : AppController
                 var returnUrl = Request.HttpMethod == "GET" ? Request.Url?.PathAndQuery ?? "/admin" : "/admin";
                 return Redirect("/admin/login?returnUrl=" + Uri.EscapeDataString(returnUrl));
             }
-            if (adminOnly && user.Role != UserRoles.Admin)
+            if (user.Role != UserRoles.Admin)
                 return MessagePage(403, "Недостаточно прав",
-                    "Это действие доступно только администратору. Обратитесь к нему или войдите под другой учётной записью.",
+                    "Админка доступна только администратору. Войдите под другой учётной записью.",
                     user, adminArea: true);
+
+            // Сервер продлевает сеанс при каждом обращении, поэтому срок cookie в браузере
+            // нужно продлить так же, иначе она истечёт через 30 минут после входа.
+            SetSessionCookie(SessionId!);
             return await action(user);
         });
 }

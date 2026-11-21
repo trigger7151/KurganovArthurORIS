@@ -24,12 +24,10 @@
                 <td class="admin-table__actions">
                     <a class="button button--small" href="${row.ViewUrl}" target="_blank">Открыть</a>
                     <a class="button button--small" href="${row.EditUrl}">Изменить</a>
-                    $if(model.CanDelete)
                     <form method="post" action="/admin/cone/delete" data-confirm="Удалить «${row.Name}»? Характеристики и эффекты удалятся вместе с ним.">
                         <input type="hidden" name="id" value="${row.Id}">
                         <button class="button button--small button--danger" type="submit">Удалить</button>
                     </form>
-                    $endif
                 </td>
             </tr>
             $endfor
@@ -42,5 +40,4 @@
         <a class="button button--primary" href="/admin/cone">Добавить первый</a>
     </div>
     $endif
-    $if(model.CanDelete)$else<p class="muted small">Удалять конусы может только администратор.</p>$endif
 </main>

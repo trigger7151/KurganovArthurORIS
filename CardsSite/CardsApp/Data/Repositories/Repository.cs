@@ -49,23 +49,23 @@ public class OrmRepository<T> : IRepository<T> where T : class, IEntity, new()
         => await _orm.DeleteAsync(TableName, id, ct) > 0;
 }
 
-public interface IPathRepository : IRepository<CombatPath> { }
-public interface ILightConeRepository : IRepository<LightCone> { }
-public interface IStatRepository : IRepository<LightConeStat> { }
-public interface ISuperimpositionRepository : IRepository<Superimposition> { }
-public interface IUserRepository : IRepository<User>
+public interface IPathRepository : IRepository<CombatPathEntity> { }
+public interface ILightConeRepository : IRepository<LightConeEntity> { }
+public interface IStatRepository : IRepository<LightConeStatEntity> { }
+public interface ISuperimpositionRepository : IRepository<SuperimpositionEntity> { }
+public interface IUserRepository : IRepository<UserEntity>
 {
-    Task<User?> GetByLoginAsync(string login, CancellationToken ct = default);
+    Task<UserEntity?> GetByLoginAsync(string login, CancellationToken ct = default);
 }
 
-public class PathRepository(IOrmContext orm) : OrmRepository<CombatPath>(orm, "paths"), IPathRepository;
-public class LightConeRepository(IOrmContext orm) : OrmRepository<LightCone>(orm, "lightcones"), ILightConeRepository;
-public class StatRepository(IOrmContext orm) : OrmRepository<LightConeStat>(orm, "lightconestats"), IStatRepository;
-public class SuperimpositionRepository(IOrmContext orm) : OrmRepository<Superimposition>(orm, "superimpositions"), ISuperimpositionRepository;
+public class PathRepository(IOrmContext orm) : OrmRepository<CombatPathEntity>(orm, "paths"), IPathRepository;
+public class LightConeRepository(IOrmContext orm) : OrmRepository<LightConeEntity>(orm, "lightcones"), ILightConeRepository;
+public class StatRepository(IOrmContext orm) : OrmRepository<LightConeStatEntity>(orm, "lightconestats"), IStatRepository;
+public class SuperimpositionRepository(IOrmContext orm) : OrmRepository<SuperimpositionEntity>(orm, "superimpositions"), ISuperimpositionRepository;
 
-public class UserRepository(IOrmContext orm) : OrmRepository<User>(orm, "users"), IUserRepository
+public class UserRepository(IOrmContext orm) : OrmRepository<UserEntity>(orm, "users"), IUserRepository
 {
-    public async Task<User?> GetByLoginAsync(string login, CancellationToken ct = default)
+    public async Task<UserEntity?> GetByLoginAsync(string login, CancellationToken ct = default)
         => (await GetAllAsync(ct)).FirstOrDefault(u =>
             string.Equals(u.Login, login, StringComparison.OrdinalIgnoreCase));
 }

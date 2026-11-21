@@ -1,20 +1,41 @@
 using MimeKit;
 using MailKit.Net.Smtp;
 using System.Threading.Tasks;
-using Search_server;
+using MiniHttpServer.Framework.Content;
 using MailKit.Security;
-namespace SocialApp.Services
+namespace HttpServer
 {
+    /// <summary>
+    /// Отправляет письма с вложением через SMTP-сервер Gmail.
+    /// </summary>
     public class EmailService
     {
+        /// <summary>
+        /// Адрес отправителя.
+        /// </summary>
         public string FromEmail{get;private set;}
+        /// <summary>
+        /// Пароль для входа на SMTP-сервер.
+        /// </summary>
         public string Password{get;private set;}
+        /// <summary>
+        /// Создаёт сервис отправки писем от имени указанного ящика.
+        /// </summary>
+        /// <param name="fromEmail">Адрес отправителя.</param>
+        /// <param name="password">Пароль для входа на SMTP-сервер.</param>
         public EmailService(string fromEmail, string password)
         {
             FromEmail = fromEmail;
             Password = password;
         }
-        // Доделать from.add,to.add, соединение с сервисом почты и аутентификацию
+        /// <summary>
+        /// Отправляет письмо с вложением <c>server.zip</c>.
+        /// </summary>
+        /// <param name="email">Адрес получателя.</param>
+        /// <param name="subject">Тема письма.</param>
+        /// <param name="message">Текст письма.</param>
+        /// <param name="stream">Содержимое вложения.</param>
+        /// <returns>Задача, завершающаяся после отправки письма.</returns>
         public async Task SendEmailAsync(string email, string subject, string message, Stream stream)
         {
             var builder = new BodyBuilder();

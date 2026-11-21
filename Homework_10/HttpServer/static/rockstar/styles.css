@@ -1,0 +1,283 @@
+.background::before {
+  background-image: url(https://s.rsg.sc/auth/images/bg-repeat.png);
+  background-size: 256px auto;
+  color: rgb(77, 77, 77);
+  background-repeat: repeat;
+  content: "";
+  height: 100%;
+  width: 100%;
+  display: block; /*делает элемент блочным: он занимает всю 
+  доступную ширину родителя (если ширина не задана явно), начинается с новой строки и не пускает 
+  другие элементы встать рядом с собой.*/
+  position: fixed; /*размещает элемент относительно исходного содержащего блока, 
+  установленного viewport. То есть элемент больше не привязан к родительскому контейнеру */
+  z-index: -1; /*z-index позволяет располагать элемент поверх друг друга. 
+  По умолчанию равно 0. Соответственно значение -1 позволяет расположить псевдоэлемент 
+  с фоном позади всех*/
+}
+body {
+  margin: 0px;
+}
+.white-color {
+  color: white;
+}
+.background-white {
+  background-color: white;
+}
+.display-block {
+  display: block;
+}
+.display-inline-block {
+  display: inline-block; /* "An element with display: inline-block will appear 
+  on the same line as other inline or inline-block elements. 
+  In addition, you can set the width, height, margin-top, and margin-bottom 
+  properties for the element (like block elements)." */
+}
+.color-grey {
+  color: rgb(153, 153, 153);
+}
+.background-transparent {
+  background-color: transparent;
+}
+.color-light-grey {
+  color: rgb(153, 153, 153);
+}
+.color-white-0\.8 {
+  color: rgba(255, 255, 255, 0.8);
+}
+.border-none {
+  border-width: 0px;
+}
+.border-left-0\.8 {
+  border-left: 0.8px;
+  border-left-style: solid;
+  box-sizing: border-box;
+}
+.line-height-0\.75 {
+  line-height: 0.75rem;
+  height: 0.75rem;
+  text-align: center;
+}
+button {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+.uppercase {
+  text-transform: uppercase;
+}
+.font-0\.75 {
+  font-size: 0.75rem;
+}
+.display-grid {
+  display: grid;
+}
+.main-container {
+  grid-template-rows: 0px auto 3.875rem;
+  grid-template-areas: ". . ." ". content ." "footer footer footer";
+  padding-top: 40px;
+  width: 100%;
+}
+.min-h-f {
+  min-height: 100vh;
+}
+.center-container {
+  grid-area: content;
+  justify-self: center;
+  align-self: center;
+  position: relative;
+}
+.footer-grid-area {
+  grid-area: footer;
+}
+* {
+  box-sizing: border-box;
+}
+ul {
+  margin: 0px;
+}
+.footer {
+  text-align: center;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.logo {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  justify-content: center;
+}
+.display-flex {
+  display: flex;
+}
+h1,
+p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.sign-in-container {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding: 1.25rem;
+}
+.form {
+  margin-top: 1.25rem;
+}
+.mg-b {
+  margin-bottom: 1.25rem;
+}
+fieldset {
+  padding: 0;
+  border: 0;
+}
+.email-password-input {
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
+  height: 3.125rem;
+  border: 1px solid #e6e6e6;
+  border-radius: 3px;
+  font-size: 1.25rem;
+}
+.position-absolute {
+  position: absolute;
+}
+.position-relative {
+  position: relative;
+}
+.label-text {
+  line-height: 3.125rem;
+  top: 0;
+  left: 1.25rem;
+  transform-origin: left top;
+  transition: transform 0.15s ease;
+  color: #4d4d4d;
+}
+input {
+  padding: 0;
+}
+.email-password-input:not(:placeholder-shown) + .label-text {
+  transform: translate(0.0625rem, -0.3125rem) scale(0.75);
+  transition: transform 0.2s;
+}
+.email-password-input:not(:placeholder-shown) {
+  padding-top: 0.75rem;
+}
+.mt-20 {
+  margin-top: 1.25rem;
+}
+.checkbox {
+  height: 1.25rem;
+  width: 1.25rem;
+}
+.align-center {
+  align-items: center;
+}
+.display-flex {
+  display: flex;
+}
+input {
+  margin: 0;
+}
+.remember-me {
+  min-height: 20px;
+  line-height: 1.25rem;
+  padding-left: 1.875rem;
+}
+.remember-me::before {
+  width: 1.25rem;
+  content: "";
+}
+.justify-space-between {
+  justify-content: space-between;
+}
+.forgot-password {
+  color: #1a1a1a;
+}
+.sign-in-btn {
+  background-color: rgb(252, 175, 23);
+  border-color: #fcaf17;
+  line-height: 2.25rem;
+  border-radius: 3px;
+  border-width: 1px;
+  margin-left: 0.625rem;
+  min-width: 6.25rem;
+}
+.align-self-center {
+  align-self: center;
+}
+.xb-ps-sgn {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding: 1.25rem;
+}
+.ps-or-xb-logo {
+  max-height: 65px;
+  max-width: 65px;
+}
+.ps-or-xb-img {
+  min-height: 100%;
+  min-width: 100%;
+  max-height: 65px;
+  max-width: 65px;
+}
+.justify-flex-end {
+  justify-content: flex-end;
+}
+.wdth-50 {
+  width: 50%;
+}
+.mr-10 {
+  margin-right: 10px;
+}
+.wdth-500 {
+  width: 500px;
+}
+.ps-or-xb-logo::before {
+  content: "";
+  padding-top: 100%;
+}
+.flex-grow-1 {
+  flex-grow: 1;
+}
+* {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    Roboto,
+    Oxygen-Sans,
+    Ubuntu,
+    Cantarell,
+    Helvetica Neue,
+    sans-serif;
+}
+.sign-in-h {
+  font-weight: 600;
+  color: #4d4d4d;
+}
+.wdth-full {
+  width: 100%;
+}
+.sign-in-btn-span {
+  font-size: 1rem;
+  color: black;
+  font-weight: 700;
+}
+h1 {
+  font-size: 1.5rem;
+}
+.create-new-account-p {
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  text-align: center;
+}
+.footer-links {
+  font-size: 0.8rem;
+  padding-left: 6px;
+  padding-right: 4px;
+}
+.color-yellow {
+  color: #fcaf17;
+}
+.email-password-input:focus {
+  outline: 1px solid rgb(72, 72, 255);
+}

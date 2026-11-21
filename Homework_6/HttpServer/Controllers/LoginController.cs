@@ -1,24 +1,29 @@
 using System;
-using Search_server;
+using MiniHttpServer.Framework.Content;
 using System.Net;
 using System.Web;
-using HttpServer.Results;
-using SocialApp.Services;
-using JsonClasses;
+using MiniHttpServer.Framework.Content;
+using MiniHttpServer.Framework.Content;
 using System.Text.Json;
 using System.IO.Compression;
 using MimeKit;
 using Microsoft.CodeAnalysis;
-using HttpServer.Framework.Attributes;
-using HttpServer.Framework;
+using MiniHttpServer.Framework.Results;
 namespace HttpServer.Controllers;
 
+/// <summary>
+/// Страница входа сайта Rockstar: показывает форму и принимает её отправку.
+/// </summary>
 [Route("/login")]
 public class LoginController : ControllerBase
 {
+    /// <summary>
+    /// POST /login — принимает отправленную форму, выводит её поля в консоль и снова показывает страницу входа.
+    /// </summary>
+    /// <returns>HTML страницы входа.</returns>
     [Method("POST")]
     [Route("")]
-    public async Task<IResult> ProcessLoginPostAuth()
+    public async Task<IHttpResult> ProcessLoginPostAuth()
     {
         var request = base.Context.Request;
         var response = base.Context.Response;
@@ -38,16 +43,23 @@ public class LoginController : ControllerBase
         Console.WriteLine($"login={login}, password={password}, remember={remember}");
 
         var path = Path.Combine(AppContext.BaseDirectory + "static", "login/index.html");
-        var result = ReturnFileResult(path);
+        var loginHtml = await File.ReadAllTextAsync(path);
+        var result = Html(loginHtml);
         return result;
         
     }
+
+    /// <summary>
+    /// GET /login — возвращает страницу входа.
+    /// </summary>
+    /// <returns>HTML страницы входа.</returns>
     [Method("GET")]
     [Route("")]
-    public async Task<IResult> ProcessLoginGet()
+    public async Task<IHttpResult> ProcessLoginGet()
     {
         var path = Path.Combine(AppContext.BaseDirectory + "static", "login/index.html");
-        var result = ReturnFileResult(path);
+        var loginHtml = await File.ReadAllTextAsync(path);
+        var result = Html(loginHtml);
         return result;
     }
 }

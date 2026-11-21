@@ -1,9 +1,8 @@
--- Файл в UTF-8: явно задаём кодировку, чтобы psql в консоли Windows (WIN1251/CP866)
+-- Файл в UTF-8: кодировка задаётся явно, чтобы psql в консоли Windows (WIN1251/CP866)
 -- не испортил русский текст и не пропустил вставки.
 SET client_encoding = 'UTF8';
 
--- Начальные данные. Световые конусы здесь тестовые: замените их своими
--- через админку (/admin) или дополните этот скрипт.
+-- Начальные данные.
 
 INSERT INTO paths (name, slug, description) VALUES
 ('Разрушение', 'destruction', ''),
@@ -16,10 +15,9 @@ INSERT INTO paths (name, slug, description) VALUES
 ('Память',     'remembrance', ''),
 ('Радость',    'elation',     '');
 
--- Пароли: admin / Admin123, editor / Editor123 (PBKDF2-SHA256, 100 000 итераций).
+-- Пароль: admin / Admin123 (PBKDF2-SHA256, 100 000 итераций).
 INSERT INTO users (login, passwordhash, displayname, role) VALUES
-('admin',  'pbkdf2-sha256$100000$bGlnaHRjb25lLWFkbWluMQ==$vXSmdQ3xFHZyCy5WNy4avAyiIebALHZgZGKNexFJFMg=', 'Администратор', 'admin'),
-('editor', 'pbkdf2-sha256$100000$bGlnaHRjb25lLWVkaXRvcg==$GyY/PGczprzhHc7yif2vENuPjySyP+Zs78ykFh4ZhZs=', 'Редактор',      'editor');
+('admin',  'pbkdf2-sha256$100000$bGlnaHRjb25lLWFkbWluMQ==$vXSmdQ3xFHZyCy5WNy4avAyiIebALHZgZGKNexFJFMg=', 'Администратор', 'admin');
 
 INSERT INTO lightcones (name, rarity, pathid, effectname, imageurl, descriptionhtml) VALUES
 ('Финал пути, где гаснут звёзды', 5, (SELECT id FROM paths WHERE slug = 'destruction'), 'Всем приготовиться', NULL,

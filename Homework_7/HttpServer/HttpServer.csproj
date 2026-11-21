@@ -14,12 +14,17 @@
     <None Update="Settings\settings.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="static\**" CopyToOutputDirectory="PreserveNewest" />
     <None Update="AuthInfo.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Templates\**" CopyToOutputDirectory="PreserveNewest"/>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MailKit" Version="4.18.1" />
     <PackageReference Include="MimeKit" Version="4.18.1" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MiniHttpServer.Framework\MiniHttpServer.Framework.csproj" />
   </ItemGroup>
 
 </Project>

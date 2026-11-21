@@ -12,15 +12,28 @@ using MiniHttpServer.Framework.Handlers;
 using MiniHttpServer.Framework.Authentication;
 namespace MiniHttpServer.Framework.Handlers;
 
+/// <summary>
+/// Обработчик маршрутов контроллеров: находит метод по HTTP-методу и пути,
+/// проверяет <see cref="Attributes.AuthorizeAttribute"/>, привязывает параметры,
+/// вызывает метод и выполняет возвращённый <see cref="IHttpResult"/>.
+/// Если маршрут не найден, передаёт запрос дальше.
+/// </summary>
 public class RouteHandler: Handler
 {
+    /// <summary>
+    /// Общий сервис сеансов, через который проверяется доступ.
+    /// </summary>
     private IUserSessionService SessionService {get;set;}
+    /// <summary>
+    /// Создаёт обработчик маршрутов.
+    /// </summary>
+    /// <param name="sessionService">Общий сервис сеансов.</param>
     public RouteHandler(IUserSessionService sessionService)
     {
         SessionService = sessionService;
     }
 
-        /// <summary>
+    /// <summary>
     /// Определяет, разрешён ли доступ к действию контроллера.
     /// </summary>
     /// <param name="sessionId">
@@ -57,6 +70,7 @@ public class RouteHandler: Handler
         return userId.HasValue;
     }
 
+    /// <inheritdoc />
     public override async Task HandleAsync(HttpListenerContext context, Server server, CancellationToken token)
     {
         var localUrl = context.Request.Url.LocalPath.Trim('/').ToLowerInvariant();

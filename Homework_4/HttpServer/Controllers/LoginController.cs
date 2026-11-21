@@ -11,9 +11,16 @@ using Microsoft.CodeAnalysis;
 using MiniHttpServer.Framework.Results;
 namespace HttpServer.Controllers;
 
+/// <summary>
+/// Страница входа сайта Rockstar: показывает форму и принимает её отправку.
+/// </summary>
 [Route("/login")]
 public class LoginController : ControllerBase
 {
+    /// <summary>
+    /// POST /login — принимает отправленную форму, выводит её поля в консоль и снова показывает страницу входа.
+    /// </summary>
+    /// <returns>HTML страницы входа.</returns>
     [Method("POST")]
     [Route("")]
     public async Task<IHttpResult> ProcessLoginPostAuth()
@@ -42,6 +49,10 @@ public class LoginController : ControllerBase
         
     }
 
+    /// <summary>
+    /// GET /login — возвращает страницу входа.
+    /// </summary>
+    /// <returns>HTML страницы входа.</returns>
     [Method("GET")]
     [Route("")]
     public async Task<IHttpResult> ProcessLoginGet()

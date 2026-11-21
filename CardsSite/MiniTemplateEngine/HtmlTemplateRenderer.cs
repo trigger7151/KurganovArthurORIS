@@ -11,9 +11,19 @@ namespace MiniTemplateEngine;
 /// </summary>
 internal record Context(object? Model, IReadOnlyDictionary<string, object?> Vars)
 {
+    /// <summary>
+    /// Создаёт корневой контекст без переменных цикла.
+    /// </summary>
+    /// <param name="model">Модель данных.</param>
+    /// <returns>Новый контекст.</returns>
     public static Context Root(object? model) => new(model, new Dictionary<string, object?>());
 
-    // Возвращает новый контекст с добавленной переменной цикла (старый не меняется).
+    /// <summary>
+    /// Возвращает новый контекст с добавленной переменной цикла (старый не меняется).
+    /// </summary>
+    /// <param name="name">Имя переменной цикла.</param>
+    /// <param name="value">Значение текущего элемента.</param>
+    /// <returns>Контекст с той же моделью и расширенным набором переменных.</returns>
     public Context With(string name, object? value)
     {
         var vars = new Dictionary<string, object?>(Vars) { [name] = value };
@@ -21,31 +31,49 @@ internal record Context(object? Model, IReadOnlyDictionary<string, object?> Vars
     }
 }
 
+/// <inheritdoc />
 public class HtmlTemplateRenderer : IHtmlTemplateRenderer
 {
+    /// <summary>
+    /// Подстановка <c>${путь}</c>, где путь — имена через точку.
+    /// </summary>
     private static readonly Regex VariableRegex = new(@"\$\{([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*)\}");
+    /// <summary>
+    /// Заголовок цикла <c>var имя in путь</c>.
+    /// </summary>
     private static readonly Regex ForeachHeaderRegex =
         new(@"^\s*var\s+([a-zA-Z_]\w*)\s+in\s+([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*)\s*$");
 
+    /// <summary>Начало условия.</summary>
     private const string IfStart = "$if(";
+    /// <summary>Ветка «иначе».</summary>
     private const string Else = "$else";
+    /// <summary>Конец условия.</summary>
     private const string EndIf = "$endif";
+    /// <summary>Начало цикла.</summary>
     private const string ForeachStart = "$foreach(";
+    /// <summary>Конец цикла.</summary>
     private const string EndFor = "$endfor";
+    /// <summary>
+    /// Погрешность, в пределах которой числа считаются равными при сравнении.
+    /// </summary>
     private const double Epsilon = 1e-9;
 
+    /// <inheritdoc />
     public string RenderFromString(string htmlTemplate, object dataModel)
     {
         ArgumentNullException.ThrowIfNull(htmlTemplate);
         return Render(htmlTemplate, Context.Root(dataModel));
     }
 
+    /// <inheritdoc />
     public string RenderFromFile(string filePath, object dataModel)
     {
         ArgumentNullException.ThrowIfNull(filePath);
         return RenderFromString(File.ReadAllText(filePath), dataModel);
     }
 
+    /// <inheritdoc />
     public string RenderToFile(string inputFilePath, string outputFilePath, object dataModel)
     {
         ArgumentNullException.ThrowIfNull(outputFilePath);
@@ -87,7 +115,14 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
         return sb.ToString();
     }
 
-    // Рендерит блок $if, начинающийся с позиции start; возвращает позицию сразу после $endif.
+    /// <summary>
+    /// Рендерит блок $if, начинающийся с позиции <paramref name="start"/>.
+    /// </summary>
+    /// <param name="template">Шаблон целиком.</param>
+    /// <param name="start">Позиция начала <c>$if(</c>.</param>
+    /// <param name="ctx">Контекст рендеринга.</param>
+    /// <param name="sb">Буфер, в который дописывается результат.</param>
+    /// <returns>Позиция сразу после <c>$endif</c>.</returns>
     private static int RenderIf(string template, int start, Context ctx, StringBuilder sb)
     {
         int closeBracket = template.IndexOf(')', start);
@@ -108,7 +143,15 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
         return endIf + EndIf.Length;
     }
 
-    // Рендерит блок $foreach, начинающийся с позиции start; возвращает позицию сразу после $endfor.
+    /// <summary>
+    /// Рендерит блок $foreach, начинающийся с позиции <paramref name="start"/>:
+    /// тело выводится для каждого элемента коллекции с переменной цикла в контексте.
+    /// </summary>
+    /// <param name="template">Шаблон целиком.</param>
+    /// <param name="start">Позиция начала <c>$foreach(</c>.</param>
+    /// <param name="ctx">Контекст рендеринга.</param>
+    /// <param name="sb">Буфер, в который дописывается результат.</param>
+    /// <returns>Позиция сразу после <c>$endfor</c>.</returns>
     private static int RenderForeach(string template, int start, Context ctx, StringBuilder sb)
     {
         int closeBracket = template.IndexOf(')', start);
@@ -195,6 +238,12 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
 
     #region Условия
 
+    /// <summary>
+    /// Вычисляет условие из <c>$if(...)</c>: один операнд или «операнд оператор операнд».
+    /// </summary>
+    /// <param name="condition">Текст условия.</param>
+    /// <param name="ctx">Контекст рендеринга.</param>
+    /// <returns>Значение условия.</returns>
     private static bool EvaluateCondition(string condition, Context ctx)
     {
         var leftOperand = ConditionReader.GetOperand(condition);
@@ -212,6 +261,13 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
         return EvaluateFullCondition(trimmedLeftOperand, conditionOperator.Value.Value, trimmedRightOperand, ctx);
     }
 
+    /// <summary>
+    /// Вычисляет условие из одного операнда: <c>true</c>/<c>false</c>/<c>null</c> или путь к булеву значению.
+    /// </summary>
+    /// <param name="operand">Операнд.</param>
+    /// <param name="ctx">Контекст рендеринга.</param>
+    /// <returns>Значение условия.</returns>
+    /// <exception cref="TemplateRenderException">Операнд — число или не булево значение.</exception>
     private static bool EvaluateOperandAsCondition(string operand, Context ctx)
     {
         var trimmedOperand = operand.TrimStart();
@@ -235,6 +291,16 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
         }
     }
 
+    /// <summary>
+    /// Сравнивает два операнда. Сравниваемые значения должны быть одного типа и реализовывать <see cref="IComparable"/>;
+    /// с null допустимы только <c>==</c> и <c>!=</c>.
+    /// </summary>
+    /// <param name="leftOperand">Левый операнд.</param>
+    /// <param name="op">Оператор сравнения.</param>
+    /// <param name="rightOperand">Правый операнд.</param>
+    /// <param name="ctx">Контекст рендеринга.</param>
+    /// <returns>Результат сравнения.</returns>
+    /// <exception cref="TemplateRenderException">Значения несравнимы или оператор неизвестен.</exception>
     private static bool EvaluateFullCondition(string leftOperand, string op, string rightOperand, Context ctx)
     {
         IComparable? leftOperandObj;
@@ -280,6 +346,13 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
         };
     }
 
+    /// <summary>
+    /// Сравнивает числа с учётом погрешности <see cref="Epsilon"/>.
+    /// </summary>
+    /// <param name="a">Левое число.</param>
+    /// <param name="b">Правое число.</param>
+    /// <param name="op">Оператор сравнения.</param>
+    /// <returns>Результат сравнения.</returns>
     private static bool CompareDoubles(double a, double b, string op)
     {
         bool equal = Math.Abs(a - b) < Epsilon;
@@ -296,6 +369,11 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
         };
     }
 
+    /// <summary>
+    /// Проверяет, является ли значение числом встроенного типа.
+    /// </summary>
+    /// <param name="obj">Значение.</param>
+    /// <returns>true для числовых типов.</returns>
     private static bool IsNumber(object? obj)
     {
         return obj is
@@ -303,6 +381,13 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
             long or ulong or float or double or decimal;
     }
 
+    /// <summary>
+    /// Превращает операнд в значение: литерал (<c>null</c>, <c>true</c>, <c>false</c>, строка в кавычках, число)
+    /// или значение по пути из модели. Числа приводятся к double, чтобы сравнивать разные числовые типы.
+    /// </summary>
+    /// <param name="operand">Операнд.</param>
+    /// <param name="ctx">Контекст рендеринга.</param>
+    /// <returns>Значение операнда.</returns>
     private static object? CastOperand(string operand, Context ctx)
     {
         switch (operand)
@@ -355,6 +440,12 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
         return value;
     }
 
+    /// <summary>
+    /// Заменяет все подстановки <c>${...}</c> в тексте HTML-кодированными значениями.
+    /// </summary>
+    /// <param name="text">Текст без блоков $if/$foreach.</param>
+    /// <param name="ctx">Контекст рендеринга.</param>
+    /// <returns>Текст с подставленными значениями.</returns>
     private static string RenderVariables(string text, Context ctx)
     {
         return VariableRegex.Replace(text, match =>
@@ -369,8 +460,17 @@ public class HtmlTemplateRenderer : IHtmlTemplateRenderer
     #endregion
 }
 
+/// <summary>
+/// Разбор условия <c>$if(...)</c> на операнды и оператор.
+/// </summary>
 internal class ConditionReader
 {
+    /// <summary>
+    /// Читает операнд с начала строки конечным автоматом <see cref="OperandReader"/>.
+    /// </summary>
+    /// <param name="str">Строка, начинающаяся с операнда (возможно, с пробелами).</param>
+    /// <returns>Прочитанный операнд вместе с ведущими пробелами.</returns>
+    /// <exception cref="TemplateRenderException">Операнд не найден.</exception>
     public static string GetOperand(string str)
     {
         var reader = new OperandReader();
@@ -378,7 +478,13 @@ internal class ConditionReader
         return reader.ProcessWord(str);
     }
 
-    // возвращает null если не нашел оператор
+    /// <summary>
+    /// Ищет оператор сравнения (<c>==</c>, <c>!=</c>, <c>&lt;</c>, <c>&gt;</c>, <c>&lt;=</c>, <c>&gt;=</c>),
+    /// пропуская пробелы в начале строки.
+    /// </summary>
+    /// <param name="str">Часть условия после левого операнда.</param>
+    /// <returns>Оператор и его позиция или null, если строка закончилась без оператора.</returns>
+    /// <exception cref="TemplateRenderException">Вместо оператора встретился другой символ.</exception>
     public static (string Value, int Index)? GetOperator(string str)
     {
         for (int i = 0; i != str.Length; i++)

@@ -34,7 +34,7 @@ services:
     volumes:
       - uploads:/app/static/uploads
     # Сервер читает команды из консоли (start | stop | restart | exit)
-    # и завершается, если ввод закрыт, поэтому консоль держим открытой.
+    # и завершается, если ввод закрыт, поэтому консоль нужно держать открытой.
     stdin_open: true
     tty: true
     restart: unless-stopped

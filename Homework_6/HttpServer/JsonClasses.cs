@@ -1,16 +1,17 @@
-namespace JsonClasses;
+namespace HttpServer;
 
 using System;
-
-public class Settings
-{
-    public string responsePath { get; set; }
-    public string responsePathType { get; set; }
-    public string[] prefixes { get; set; }
-    public string connectionString { get; set; }
-}
+/// <summary>
+/// Данные для входа в почтовый ящик отправителя, читаемые из AuthInfo.json.
+/// </summary>
 public class AuthenticationInfo
 {
+    /// <summary>
+    /// Адрес почтового ящика отправителя.
+    /// </summary>
     public string Email { get; set; }
+    /// <summary>
+    /// Пароль (пароль приложения) почтового ящика отправителя.
+    /// </summary>
     public string Password { get; set; }
 }

@@ -13,7 +13,6 @@ public class LayoutVm
     public bool IsAdminArea { get; set; }
     public bool IsSignedIn { get; set; }
     public string UserName { get; set; } = "";
-    public bool IsAdmin { get; set; }
     public List<string> Styles { get; set; } = [];
     public List<string> Scripts { get; set; } = [];
 }
@@ -100,7 +99,7 @@ public class ConeDetailsVm
     public List<SuperimpositionVm> Superimpositions { get; set; } = [];
     public string CurrentEffectText { get; set; } = "";
     public bool HasDescription { get; set; }
-    /// <summary>Очищенный HTML описания. Вставляется в страницу не шаблонизатором, а через слот raw (см. ViewResult).</summary>
+    /// <summary>Очищенный HTML описания. Вставляется в страницу не шаблонизатором, а через слот raw (подробнее — в ViewResult).</summary>
     public string DescriptionHtml { get; set; } = "";
 }
 

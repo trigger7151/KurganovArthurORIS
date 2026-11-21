@@ -31,9 +31,9 @@
         });
         if (editorInput.value) quill.clipboard.dangerouslyPasteHTML(editorInput.value);
 
-        // Перед отправкой (и до проверки формы) переносим HTML редактора в скрытое поле.
+        // Перед отправкой (и до проверки формы) HTML редактора нужно перенести в скрытое поле.
         form.addEventListener("submit", function () {
-            // getSemanticHTML превращает пробелы в &nbsp; — возвращаем обычные, чтобы текст переносился.
+            // getSemanticHTML превращает пробелы в &nbsp; — их нужно заменить обычными, чтобы текст переносился.
             editorInput.value = quill.getText().trim() ? quill.getSemanticHTML().replace(/&nbsp;/g, " ") : "";
         }, true);
     }

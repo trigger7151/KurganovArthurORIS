@@ -3,8 +3,13 @@ using MiniHttpServer.Framework.Results;
 
 namespace MiniHttpServer.Framework.Handlers;
 
+/// <summary>
+/// Первый обработчик цепочки: перехватывает необработанные исключения остальных обработчиков,
+/// пишет их в консоль и отвечает клиенту 500 без подробностей ошибки.
+/// </summary>
 public class ExceptionHandler : Handler
 {
+    /// <inheritdoc />
     public override async Task HandleAsync(HttpListenerContext context, Server server, CancellationToken token)
     {
         try
@@ -21,6 +26,12 @@ public class ExceptionHandler : Handler
         }
     }
 
+    /// <summary>
+    /// Пытается записать ответ 500. Если ответ уже начал отправляться
+    /// или клиент отключился, ошибка записи игнорируется.
+    /// </summary>
+    /// <param name="response">HTTP-ответ.</param>
+    /// <param name="token">Токен отмены.</param>
     private static async Task TryWriteErrorAsync(HttpListenerResponse response, CancellationToken token)
     {
         try

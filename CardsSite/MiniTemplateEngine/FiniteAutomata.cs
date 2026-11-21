@@ -4,23 +4,48 @@ using System.Text;
 
 namespace MiniTemplateEngine;
 
+/// <summary>
+/// Состояния автомата чтения операнда.
+/// </summary>
 internal enum State
 {
+    /// <summary>Начало: пропуск пробелов, ожидание первого символа операнда.</summary>
     First,
+    /// <summary>Внутри строки в кавычках.</summary>
     Second,
+    /// <summary>После закрывающей кавычки (две кавычки подряд — кавычка внутри строки).</summary>
     Third,
+    /// <summary>Внутри имени или пути (буквы, цифры, подчёркивание).</summary>
     Fourth,
+    /// <summary>После точки в пути: ожидается следующее имя.</summary>
     Fifth,
+    /// <summary>Целая часть числа.</summary>
     Sixth,
+    /// <summary>После десятичной точки: ожидается цифра.</summary>
     Seventh,
+    /// <summary>Дробная часть числа.</summary>
     Eighth,
+    /// <summary>Операнд прочитан.</summary>
     Accepted,
+    /// <summary>Недопустимый символ: ошибка в шаблоне.</summary>
     TemplateError
 }
+/// <summary>
+/// Конечный автомат, читающий один операнд условия: строку в кавычках, число или путь к значению модели.
+/// </summary>
 internal class OperandReader
 {
+    /// <summary>
+    /// Текущее состояние автомата.
+    /// </summary>
     public State CurrentState {get; private set;} = State.First;
 
+    /// <summary>
+    /// Читает операнд с начала строки до символа, на котором автомат его принимает.
+    /// </summary>
+    /// <param name="word">Строка, начинающаяся с операнда.</param>
+    /// <returns>Прочитанная часть строки (без символа, завершившего операнд).</returns>
+    /// <exception cref="TemplateRenderException">Строка закончилась раньше, чем операнд был принят.</exception>
     public string ProcessWord(string word)
     {
         var result = new StringBuilder();
@@ -35,6 +60,11 @@ internal class OperandReader
             throw new TemplateRenderException("operand not found");
         return result.ToString();
     }
+    /// <summary>
+    /// Выполняет переход автомата по одному символу.
+    /// </summary>
+    /// <param name="c">Очередной символ.</param>
+    /// <exception cref="TemplateRenderException">Автомат находится в состоянии ошибки.</exception>
     public void ProcessSymbol(char c)
     {
         switch (CurrentState)
@@ -81,6 +111,11 @@ internal class OperandReader
     }
 
     #region функции перехода
+    /// <summary>
+    /// Переход из начального состояния.
+    /// </summary>
+    /// <param name="c">Очередной символ.</param>
+    /// <returns>Новое состояние.</returns>
     private 
     State SwitchFromFirst(char c)
     {
@@ -108,6 +143,11 @@ internal class OperandReader
         }
     }
 
+    /// <summary>
+    /// Переход внутри строки в кавычках.
+    /// </summary>
+    /// <param name="c">Очередной символ.</param>
+    /// <returns>Новое состояние.</returns>
     private State SwitchFromSecond(char c)
     {
         switch (c)
@@ -120,6 +160,11 @@ internal class OperandReader
         }
     }
 
+    /// <summary>
+    /// Переход после закрывающей кавычки.
+    /// </summary>
+    /// <param name="c">Очередной символ.</param>
+    /// <returns>Новое состояние.</returns>
     private State SwitchFromThird(char c)
     {
         return c switch
@@ -129,6 +174,11 @@ internal class OperandReader
         };
     }
 
+    /// <summary>
+    /// Переход внутри имени или пути.
+    /// </summary>
+    /// <param name="c">Очередной символ.</param>
+    /// <returns>Новое состояние.</returns>
     private State SwitchFromFourth(char c)
     {
         switch (c)
@@ -150,6 +200,11 @@ internal class OperandReader
         }
     }
 
+    /// <summary>
+    /// Переход после точки в пути.
+    /// </summary>
+    /// <param name="c">Очередной символ.</param>
+    /// <returns>Новое состояние.</returns>
     private State SwitchFromFifth(char c)
     {
         switch (c)
@@ -165,6 +220,11 @@ internal class OperandReader
         }
     }
 
+    /// <summary>
+    /// Переход в целой части числа.
+    /// </summary>
+    /// <param name="c">Очередной символ.</param>
+    /// <returns>Новое состояние.</returns>
     private State SwitchFromSixth(char c)
     {
         return c switch
@@ -175,6 +235,11 @@ internal class OperandReader
         };
     }
 
+    /// <summary>
+    /// Переход после десятичной точки.
+    /// </summary>
+    /// <param name="c">Очередной символ.</param>
+    /// <returns>Новое состояние.</returns>
     private State SwitchFromSeventh(char c)
     {
         return c switch
@@ -184,6 +249,11 @@ internal class OperandReader
         };
     }
 
+    /// <summary>
+    /// Переход в дробной части числа.
+    /// </summary>
+    /// <param name="c">Очередной символ.</param>
+    /// <returns>Новое состояние.</returns>
     private State SwitchFromEighth(char c)
     {
         return c switch
@@ -194,6 +264,11 @@ internal class OperandReader
     }
     #endregion
 
+    /// <summary>
+    /// Можно ли закончить операнд в этом состоянии (конец строки допустим).
+    /// </summary>
+    /// <param name="state">Состояние автомата.</param>
+    /// <returns>true для допускающих состояний.</returns>
     private static bool IsAccepting(State state)
     {
         return state switch

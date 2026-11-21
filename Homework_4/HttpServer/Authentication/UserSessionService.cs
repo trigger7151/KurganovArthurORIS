@@ -8,12 +8,19 @@ namespace MiniHttpServer.Framework.Authentication;
 /// </summary>
 public sealed class UserSessionService : IUserSessionService
 {
+    /// <summary>Время жизни сеанса по умолчанию.</summary>
     private static readonly TimeSpan DefaultSessionLifetime = TimeSpan.FromMinutes(30);
+    /// <summary>Число одновременных сеансов пользователя по умолчанию.</summary>
     private const int DefaultMaxSessionsPerUser = 5;
 
+    /// <summary>
+    /// Сеансы по идентификатору; потокобезопасен, так как запросы обрабатываются параллельно.
+    /// </summary>
     private readonly ConcurrentDictionary<string, SessionInfo> _sessions = new();
+    /// <summary>Сколько сеансов одновременно может быть у пользователя.</summary>
     private readonly int _maxSessionsPerUser;
 
+    /// <summary>Создаёт сервис сеансов.</summary>
     /// <param name="sessionLifetime">
     /// Время жизни сеанса без активности. По умолчанию 30 минут.
     /// </param>

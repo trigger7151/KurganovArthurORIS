@@ -28,7 +28,7 @@ public class AuthController : AppController
             if (string.IsNullOrEmpty(password))
                 errors.Add("password", "Введите пароль.");
 
-            User? user = null;
+            UserEntity? user = null;
             if (errors.IsValid)
                 user = await Services.Auth.SignInAsync(loginText, password, Ct);
 
@@ -94,7 +94,6 @@ public class AdminController : AdminAreaController
                     ViewUrl = $"/cone?id={r.Cone.Id}",
                 }).ToList(),
                 CountText = $"Всего: {rows.Count}",
-                CanDelete = user.Role == UserRoles.Admin,
                 Notice = notice,
                 NoticeIsError = isError,
             };
@@ -147,7 +146,7 @@ public class AdminController : AdminAreaController
         {
             var deleted = await Services.ConesAdmin.DeleteAsync(ParseId(id), Ct);
             return Redirect(deleted ? "/admin?msg=deleted" : "/admin?msg=notfound");
-        }, adminOnly: true);
+        });
 
     /// <summary>
     /// Загрузка арта через AJAX: тело запроса — сам файл (Content-Type: image/png и т. п.).
@@ -166,7 +165,7 @@ public class AdminController : AdminAreaController
                 : JsonResponse(new { success = true, url });
         }, json: true);
 
-    private async Task<IHttpResult> ConeFormView(User user, ConeInput input, ValidationErrors errors, int statusCode = 200)
+    private async Task<IHttpResult> ConeFormView(UserEntity user, ConeInput input, ValidationErrors errors, int statusCode = 200)
     {
         var paths = await Services.PathsAdmin.GetAllAsync(Ct);
         FieldVm F(string name, string label, string? value) => FieldVm.Of(name, label, value, errors);
@@ -211,7 +210,7 @@ public class AdminController : AdminAreaController
     };
 }
 
-/// <summary>Управление путями — только для администратора.</summary>
+/// <summary>Управление путями.</summary>
 [Route("/admin/paths")]
 public class AdminPathsController : AdminAreaController
 {
@@ -240,7 +239,7 @@ public class AdminPathsController : AdminAreaController
                 NoticeIsError = isError,
             };
             return AdminView("Admin/Paths.html", model, "Пути", user, scripts: ["/js/admin.js"]);
-        }, adminOnly: true);
+        });
 
     [Method("GET")]
     [Route("edit")]
@@ -248,11 +247,11 @@ public class AdminPathsController : AdminAreaController
         => AuthorizedAsync(async user =>
         {
             var pathId = ParseId(id);
-            var path = pathId == 0 ? new CombatPath() : await Services.PathsAdmin.GetAsync(pathId, Ct);
+            var path = pathId == 0 ? new CombatPathEntity() : await Services.PathsAdmin.GetAsync(pathId, Ct);
             if (path is null)
                 return MessagePage(404, "Путь не найден", "Возможно, его уже удалили.", user, adminArea: true);
             return FormView(user, new PathInput(path.Id, path.Name, path.Slug, path.Description), new ValidationErrors());
-        }, adminOnly: true);
+        });
 
     [Method("POST")]
     [Route("edit")]
@@ -264,7 +263,7 @@ public class AdminPathsController : AdminAreaController
             return result.Success
                 ? Redirect($"/admin/paths?msg={(input.Id == 0 ? "created" : "saved")}")
                 : FormView(user, input, result.Errors, 400);
-        }, adminOnly: true);
+        });
 
     [Method("POST")]
     [Route("delete")]
@@ -273,9 +272,9 @@ public class AdminPathsController : AdminAreaController
         {
             var error = await Services.PathsAdmin.DeleteAsync(ParseId(id), Ct);
             return Redirect(error is null ? "/admin/paths?msg=deleted" : "/admin/paths?msg=inuse");
-        }, adminOnly: true);
+        });
 
-    private IHttpResult FormView(User user, PathInput input, ValidationErrors errors, int statusCode = 200)
+    private IHttpResult FormView(UserEntity user, PathInput input, ValidationErrors errors, int statusCode = 200)
     {
         var model = new PathFormVm
         {

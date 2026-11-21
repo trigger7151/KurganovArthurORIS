@@ -11,8 +11,11 @@ public class AuthController : ControllerBase
 {
     // Учебная учётная запись — только для локальной демонстрации.
     // Для реальных пользователей нужна проверка хеша пароля из базы.
+    /// <summary>Логин учебной учётной записи.</summary>
     private const string TestLogin = "student";
+    /// <summary>Пароль учебной учётной записи.</summary>
     private const string TestPassword = "test123";
+    /// <summary>Идентификатор пользователя учебной учётной записи.</summary>
     private const int TestUserId = 1;
 
     /// <summary>
